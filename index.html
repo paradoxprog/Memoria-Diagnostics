@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindGuard - AI-Powered Alzheimer's Support</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-20">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-gray-800">MindGuard</a>
+            <div class="space-x-4">
+                <button id="login-btn" class="text-gray-700 hover:text-blue-500 font-medium">Log In</button>
+                <button id="signup-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Sign Up</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-white py-20">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-5xl font-bold text-gray-900">Early Insight, Enhanced Support</h1>
+            <p class="mt-4 text-xl text-gray-600">MindGuard is an AI-powered tool providing preliminary analysis for early Alzheimer's detection and supportive resources for caregivers.</p>
+            <button id="get-started-btn" class="mt-8 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-lg text-lg">Get Started</button>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center text-gray-900">How MindGuard Helps</h2>
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1: MRI Analysis -->
+                <div class="bg-white p-8 rounded-lg shadow-md text-center">
+                    <svg class="w-16 h-16 text-blue-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <h3 class="mt-6 text-xl font-semibold">MRI Analysis</h3>
+                    <p class="mt-2 text-gray-600">Upload a brain MRI scan for an AI-powered analysis of potential structural indicators related to Alzheimer's disease.</p>
+                </div>
+                <!-- Feature 2: Voice Analysis -->
+                <div class="bg-white p-8 rounded-lg shadow-md text-center">
+                    <svg class="w-16 h-16 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                    <h3 class="mt-6 text-xl font-semibold">Voice Analysis</h3>
+                    <p class="mt-2 text-gray-600">Record a short voice sample to analyze linguistic patterns for potential cognitive changes.</p>
+                </div>
+                <!-- Feature 3: Caregiver Support -->
+                <div class="bg-white p-8 rounded-lg shadow-md text-center">
+                    <svg class="w-16 h-16 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    <h3 class="mt-6 text-xl font-semibold">Caregiver Chat</h3>
+                    <p class="mt-2 text-gray-600">Get supportive advice and answers to your caregiving questions from our empathetic AI assistant.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white py-8">
+        <div class="container mx-auto px-6 text-center text-gray-600">
+            <p>&copy; 2025 MindGuard. All rights reserved.</p>
+            <p class="text-sm mt-2">Disclaimer: MindGuard is an informational tool and does not provide medical advice. Consult a healthcare professional for diagnosis.</p>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md relative">
+            <button id="close-login-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+            <h2 class="text-2xl font-bold text-center mb-6">Log In to MindGuard</h2>
+            <form id="login-form">
+                <div class="mb-4"><input type="email" id="login-email" placeholder="Email" class="w-full p-3 border rounded-lg" required></div>
+                <div class="mb-6"><input type="password" id="login-password" placeholder="Password" class="w-full p-3 border rounded-lg" required></div>
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg">Log In</button>
+            </form>
+            <div class="my-6 flex items-center"><div class="flex-grow border-t"></div><span class="mx-4 text-gray-500">or</span><div class="flex-grow border-t"></div></div>
+            <button id="google-login-btn" class="w-full bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold py-3 rounded-lg flex items-center justify-center"><img src="https://www.google.com/favicon.ico" alt="Google icon" class="w-5 h-5 mr-3">Sign In with Google</button>
+            <p id="login-error" class="text-red-500 text-center mt-4"></p>
+        </div>
+    </div>
+
+    <!-- Sign Up Modal -->
+    <div id="signup-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md relative">
+            <button id="close-signup-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+            <h2 class="text-2xl font-bold text-center mb-6">Create Your Account</h2>
+            <form id="signup-form">
+                <div class="mb-4"><input type="email" id="signup-email" placeholder="Email" class="w-full p-3 border rounded-lg" required></div>
+                <div class="mb-6"><input type="password" id="signup-password" placeholder="Password" class="w-full p-3 border rounded-lg" required></div>
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg">Sign Up</button>
+            </form>
+            <div class="my-6 flex items-center"><div class="flex-grow border-t"></div><span class="mx-4 text-gray-500">or</span><div class="flex-grow border-t"></div></div>
+            <button id="google-signup-btn" class="w-full bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold py-3 rounded-lg flex items-center justify-center"><img src="https://www.google.com/favicon.ico" alt="Google icon" class="w-5 h-5 mr-3">Sign Up with Google</button>
+            <p id="signup-error" class="text-red-500 text-center mt-4"></p>
+        </div>
+    </div>
+
+    <script type="module">
+        // --- Firebase Imports ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // --- Firebase Configuration ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLbUxiTD0zjcvbhFvHMS7AsPJzeMZh01g",
+            authDomain: "mindguard-e765c.firebaseapp.com",
+            projectId: "mindguard-e765c",
+            storageBucket: "mindguard-e765c.appspot.com", // Corrected storageBucket URL
+            messagingSenderId: "362301597754",
+            appId: "1:362301597754:web:43c17fd6b4db6a66e3ed03",
+            measurementId: "G-Z2EK1RSDKD"
+        };
+
+        // --- Initialize Firebase ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // --- Modal Elements & Logic ---
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
+        const getStartedBtn = document.getElementById('get-started-btn');
+        const loginModal = document.getElementById('login-modal');
+        const signupModal = document.getElementById('signup-modal');
+        const closeLoginModal = document.getElementById('close-login-modal');
+        const closeSignupModal = document.getElementById('close-signup-modal');
+
+        const showModal = (modal) => {
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        };
+        const hideModal = (modal) => {
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
+
+        loginBtn.addEventListener('click', () => showModal(loginModal));
+        signupBtn.addEventListener('click', () => showModal(signupModal));
+        getStartedBtn.addEventListener('click', () => showModal(signupModal));
+        closeLoginModal.addEventListener('click', () => hideModal(loginModal));
+        closeSignupModal.addEventListener('click', () => hideModal(signupModal));
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) hideModal(loginModal);
+            if (e.target === signupModal) hideModal(signupModal);
+        });
+
+        // --- Authentication Logic ---
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const googleLoginBtn = document.getElementById('google-login-btn');
+        const googleSignupBtn = document.getElementById('google-signup-btn');
+        const loginError = document.getElementById('login-error');
+        const signupError = document.getElementById('signup-error');
+
+        // Email/Password Sign Up
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            signupError.textContent = '';
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    console.log('Signed up:', userCredential.user);
+                    window.location.href = './app.html'; // Redirect to your main app page
+                })
+                .catch((error) => {
+                    signupError.textContent = error.message;
+                });
+        });
+
+        // Email/Password Login
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            loginError.textContent = '';
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    console.log('Logged in:', userCredential.user);
+                    window.location.href = './app.html'; // Redirect to your main app page
+                })
+                .catch((error) => {
+                    loginError.textContent = error.message;
+                });
+        });
+
+        // Google Sign In / Sign Up
+        const handleGoogleAuth = () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    console.log('Google auth success:', result.user);
+                    window.location.href = './app.html'; // Redirect to your main app page
+                }).catch((error) => {
+                    loginError.textContent = error.message;
+                    signupError.textContent = error.message;
+                });
+        };
+        googleLoginBtn.addEventListener('click', handleGoogleAuth);
+        googleSignupBtn.addEventListener('click', handleGoogleAuth);
+
+        // --- Auth State Observer ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // If user is already logged in, you might want to redirect them
+                // For this landing page, we'll just log it.
+                console.log('User is logged in:', user.uid);
+            } else {
+                console.log('User is logged out.');
+            }
+        });
+    </script>
+
+</body>
+</html>
