@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindGuard - Multi-Modal Alzheimer's Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .recording {
+            animation: pulse 1.5s infinite;
+            background-color: #ef4444; /* Red-500 */
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .nav-link.active {
+            background-color: #3b82f6; /* blue-500 */
+            color: white;
+        }
+        #chat-window {
+            height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="#home" class="text-xl font-bold text-gray-800">MindGuard</a>
+                </div>
+                <div class="flex space-x-1 sm:space-x-2">
+                    <a href="#home" id="nav-home" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors">Home</a>
+                    <a href="#mri" id="nav-mri" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors">MRI Analysis</a>
+                    <a href="#voice" id="nav-voice" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors">Voice Analysis</a>
+                    <a href="#routine" id="nav-routine" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors">Coping Routine</a>
+                    <a href="#chat" id="nav-chat" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors">Caregiver Chat</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-3xl">
+        <!-- Home Section -->
+        <section id="home-section" class="page-section">
+             <main class="bg-white p-6 sm:p-8 rounded-xl shadow-md text-center">
+                <h1 class="text-4xl font-bold text-gray-900">Welcome to MindGuard</h1>
+                <p class="mt-4 text-lg text-gray-600">Your AI-powered assistant for preliminary Alzheimer's detection and daily support. Choose a tool below to get started.</p>
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <a href="#mri" class="nav-card block bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow text-left"><div class="flex items-center"><svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg><h2 class="ml-4 text-xl font-semibold text-gray-800">MRI Analysis</h2></div><p class="mt-2 text-gray-600">Analyze an MRI scan for potential structural signs of Alzheimer's disease.</p></a>
+                    <a href="#voice" class="nav-card block bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow text-left"><div class="flex items-center"><svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg><h2 class="ml-4 text-xl font-semibold text-gray-800">Voice Analysis</h2></div><p class="mt-2 text-gray-600">Record your voice to analyze for potential linguistic markers.</p></a>
+                    <a href="#routine" class="nav-card block bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow text-left"><div class="flex items-center"><svg class="w-10 h-10 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><h2 class="ml-4 text-xl font-semibold text-gray-800">Coping Routine</h2></div><p class="mt-2 text-gray-600">View a suggested daily routine and generate new activity ideas to help manage symptoms.</p></a>
+                    <a href="#chat" class="nav-card block bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow text-left"><div class="flex items-center"><svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg><h2 class="ml-4 text-xl font-semibold text-gray-800">Caregiver Chat</h2></div><p class="mt-2 text-gray-600">Ask questions and get supportive advice from an AI assistant designed for caregivers.</p></a>
+                </div>
+             </main>
+        </section>
+
+        <!-- MRI Analysis Section -->
+        <section id="mri-section" class="page-section hidden">
+            <main class="bg-white p-6 sm:p-8 rounded-xl shadow-md">
+                <header class="text-center mb-8"><h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Brain MRI Alzheimer's Detection</h1><p class="text-md text-gray-600 mt-2">Upload a brain MRI scan to analyze for potential signs of Alzheimer's disease.</p></header>
+                <div class="upload-section text-center"><label for="mri-upload" class="cursor-pointer inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300"><svg class="w-6 h-6 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>Upload MRI Scan</label><input id="mri-upload" type="file" class="hidden" accept="image/png, image/jpeg, image/jpg"><p id="file-name" class="text-sm text-gray-500 mt-3">No file selected</p></div>
+                <div id="image-preview" class="mt-6 text-center hidden"><img id="preview" src="#" alt="MRI Scan Preview" class="max-w-xs mx-auto rounded-lg shadow-sm"></div>
+                <div class="text-center mt-6"><button id="analyze-mri-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300 disabled:bg-gray-400" disabled>Analyze MRI</button></div>
+                <div id="mri-result-section" class="mt-8 hidden"><h2 class="text-2xl font-semibold text-center mb-4">MRI Analysis Result</h2><div id="mri-loader" class="loader mx-auto my-4 hidden"></div><div id="mri-result-text" class="bg-gray-50 p-4 rounded-lg text-gray-700"></div></div>
+                <div id="mri-error-message" class="mt-4 text-center text-red-500 font-medium hidden"></div>
+            </main>
+        </section>
+
+        <!-- Voice Analysis Section -->
+        <section id="voice-section" class="page-section hidden">
+            <main class="bg-white p-6 sm:p-8 rounded-xl shadow-md">
+                <header class="text-center mb-8"><h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Voice-Based Alzheimer's Detection</h1><p class="text-md text-gray-600 mt-2">Click "Start Recording" and read the following text aloud clearly.</p></header>
+                <div class="bg-gray-100 p-4 rounded-lg mb-6 border border-gray-200"><p id="text-to-read" class="text-lg text-gray-800 leading-relaxed">"The house on the hill had a big garden with many colorful flowers. Every morning, the old man would walk his dog down the long, winding path to the river. He remembered a time when the river was full of fish."</p></div>
+                <div class="flex justify-center items-center space-x-4"><button id="start-record-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300">Start Recording</button><button id="stop-record-btn" class="bg-gray-500 text-white font-bold py-3 px-6 rounded-lg" disabled>Stop Recording</button></div>
+                <div id="audio-playback-section" class="mt-6 text-center hidden"><h3 class="text-lg font-medium text-gray-700 mb-2">Your Recording:</h3><audio id="audio-player" controls class="w-full max-w-sm mx-auto"></audio></div>
+                <div class="text-center mt-6"><button id="analyze-voice-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300 disabled:bg-gray-400" disabled>Analyze Voice</button></div>
+                <div id="voice-result-section" class="mt-8 hidden"><h2 class="text-2xl font-semibold text-center mb-4">Voice Analysis Result</h2><div id="voice-loader" class="loader mx-auto my-4 hidden"></div><div id="voice-result-text" class="bg-gray-50 p-4 rounded-lg text-gray-700"></div></div>
+                <div id="voice-error-message" class="mt-4 text-center text-red-500 font-medium hidden"></div>
+            </main>
+        </section>
+
+        <!-- Coping Routine Section -->
+        <section id="routine-section" class="page-section hidden">
+            <main class="bg-white p-6 sm:p-8 rounded-xl shadow-md">
+                <header class="text-center mb-8"><h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Coping with Alzheimer's: A Daily Routine</h1><p class="text-md text-gray-600 mt-2">A structured daily routine can help reduce anxiety and maintain independence. This is a flexible guide; adapt it to individual needs and preferences.</p></header>
+                <div id="routine-container" class="space-y-8">
+                    <div><h2 class="text-2xl font-semibold text-blue-600 border-b-2 border-blue-200 pb-2 mb-4">Morning Routine</h2><div class="space-y-4"><div class="bg-blue-50 p-4 rounded-lg"><strong>Gentle Wake-Up:</strong> Allow for a calm and unhurried start to the day.</div><div class="bg-blue-50 p-4 rounded-lg"><strong>Personal Care:</strong> Assist with dressing and grooming as needed.</div><div class="bg-blue-50 p-4 rounded-lg"><strong>Healthy Breakfast:</strong> A nutritious, simple breakfast.</div><div id="morning-activity" class="bg-blue-50 p-4 rounded-lg"><strong>Light Activity:</strong> Simple chores like folding laundry.</div></div><div class="text-center mt-4"><button class="generate-activity-btn bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg" data-time="morning">✨ Generate Morning Activity</button></div></div>
+                    <div><h2 class="text-2xl font-semibold text-green-600 border-b-2 border-green-200 pb-2 mb-4">Afternoon Routine</h2><div class="space-y-4"><div class="bg-green-50 p-4 rounded-lg"><strong>Lunch:</strong> A balanced meal in a quiet environment.</div><div class="bg-green-50 p-4 rounded-lg"><strong>Physical Activity:</strong> A short, guided walk or stretching.</div><div id="afternoon-activity" class="bg-green-50 p-4 rounded-lg"><strong>Cognitive Stimulation:</strong> Look at photo albums or listen to music.</div><div class="bg-green-50 p-4 rounded-lg"><strong>Quiet Time:</strong> A period for rest or a nap.</div></div><div class="text-center mt-4"><button class="generate-activity-btn bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg" data-time="afternoon">✨ Generate Afternoon Activity</button></div></div>
+                    <div><h2 class="text-2xl font-semibold text-purple-600 border-b-2 border-purple-200 pb-2 mb-4">Evening Routine</h2><div class="space-y-4"><div class="bg-purple-50 p-4 rounded-lg"><strong>Dinner:</strong> A light, simple dinner.</div><div id="evening-activity" class="bg-purple-50 p-4 rounded-lg"><strong>Relaxation:</strong> Listen to calming music or an audiobook.</div><div class="bg-purple-50 p-4 rounded-lg"><strong>Prepare for Bed:</strong> A consistent bedtime routine.</div><div class="bg-purple-50 p-4 rounded-lg"><strong>Safety Check:</strong> Ensure the environment is safe for the night.</div></div><div class="text-center mt-4"><button class="generate-activity-btn bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg" data-time="evening">✨ Generate Evening Activity</button></div></div>
+                </div>
+                <div id="routine-error-message" class="mt-6 text-center text-red-500 font-medium hidden"></div>
+            </main>
+        </section>
+
+        <!-- Caregiver Chat Section -->
+        <section id="chat-section" class="page-section hidden">
+            <main class="bg-white p-6 sm:p-8 rounded-xl shadow-md">
+                <header class="text-center mb-8"><h1 class="text-3xl sm:text-4xl font-bold text-gray-900">✨ Caregiver Support Chat</h1><p class="text-md text-gray-600 mt-2">Ask questions about caregiving, managing symptoms, or for supportive advice. I'm here to help.</p></header>
+                <div id="chat-window" class="bg-gray-50 border rounded-lg p-4 space-y-4">
+                    <!-- Chat messages will appear here -->
+                </div>
+                <form id="chat-form" class="mt-4 flex">
+                    <input type="text" id="chat-input" class="flex-grow border rounded-l-lg p-2" placeholder="Type your message..." autocomplete="off">
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-r-lg">Send</button>
+                </form>
+                 <div id="chat-error-message" class="mt-4 text-center text-red-500 font-medium hidden"></div>
+            </main>
+        </section>
+
+        <footer class="text-center text-sm text-gray-500 mt-8">
+            <p>Disclaimer: This tool is for informational purposes only and does not provide a medical diagnosis. Consult with a qualified healthcare professional for any health concerns.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- Common Variables ---
+        const apiKey = "AIzaSyBj4nDn-czNrrnJd3vTJh2tYi_vMY_gAyc"; // Your API key here
+
+        // --- Navigation Elements ---
+        const navHome = document.getElementById('nav-home');
+        const navMri = document.getElementById('nav-mri');
+        const navVoice = document.getElementById('nav-voice');
+        const navRoutine = document.getElementById('nav-routine');
+        const navChat = document.getElementById('nav-chat');
+        const homeSection = document.getElementById('home-section');
+        const mriSection = document.getElementById('mri-section');
+        const voiceSection = document.getElementById('voice-section');
+        const routineSection = document.getElementById('routine-section');
+        const chatSection = document.getElementById('chat-section');
+        const navCards = document.querySelectorAll('.nav-card');
+
+        // --- MRI Section Elements ---
+        const mriUpload = document.getElementById('mri-upload');
+        const fileName = document.getElementById('file-name');
+        const imagePreview = document.getElementById('image-preview');
+        const preview = document.getElementById('preview');
+        const analyzeMriBtn = document.getElementById('analyze-mri-btn');
+        const mriResultSection = document.getElementById('mri-result-section');
+        const mriLoader = document.getElementById('mri-loader');
+        const mriResultText = document.getElementById('mri-result-text');
+        const mriErrorMessage = document.getElementById('mri-error-message');
+        let mriImageData = { base64: null, mimeType: null };
+
+        // --- Voice Section Elements ---
+        const startRecordBtn = document.getElementById('start-record-btn');
+        const stopRecordBtn = document.getElementById('stop-record-btn');
+        const audioPlaybackSection = document.getElementById('audio-playback-section');
+        const audioPlayer = document.getElementById('audio-player');
+        const analyzeVoiceBtn = document.getElementById('analyze-voice-btn');
+        const voiceResultSection = document.getElementById('voice-result-section');
+        const voiceLoader = document.getElementById('voice-loader');
+        const voiceResultText = document.getElementById('voice-result-text');
+        const voiceErrorMessage = document.getElementById('voice-error-message');
+        const textToRead = document.getElementById('text-to-read').textContent;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        // --- Routine Section Elements ---
+        const generateActivityBtns = document.querySelectorAll('.generate-activity-btn');
+        const routineErrorMessage = document.getElementById('routine-error-message');
+
+        // --- Chat Section Elements ---
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatWindow = document.getElementById('chat-window');
+        const chatErrorMessage = document.getElementById('chat-error-message');
+        let chatHistory = [];
+
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => navigate(window.location.hash));
+        navHome.addEventListener('click', () => navigate('#home'));
+        navMri.addEventListener('click', () => navigate('#mri'));
+        navVoice.addEventListener('click', () => navigate('#voice'));
+        navRoutine.addEventListener('click', () => navigate('#routine'));
+        navChat.addEventListener('click', () => navigate('#chat'));
+        navCards.forEach(card => card.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigate(e.currentTarget.getAttribute('href'));
+        }));
+        mriUpload.addEventListener('change', handleFileSelect);
+        analyzeMriBtn.addEventListener('click', handleMriAnalysis);
+        startRecordBtn.addEventListener('click', startRecording);
+        stopRecordBtn.addEventListener('click', stopRecording);
+        analyzeVoiceBtn.addEventListener('click', handleVoiceAnalysis);
+        generateActivityBtns.forEach(btn => btn.addEventListener('click', handleGenerateActivity));
+        chatForm.addEventListener('submit', handleChatSubmit);
+
+        // --- Navigation ---
+        function navigate(hash) {
+            hash = hash || '#home';
+            window.location.hash = hash;
+
+            [homeSection, mriSection, voiceSection, routineSection, chatSection].forEach(sec => sec.classList.add('hidden'));
+            [navHome, navMri, navVoice, navRoutine, navChat].forEach(nav => nav.classList.remove('active'));
+
+            if (hash === '#voice') {
+                voiceSection.classList.remove('hidden');
+                navVoice.classList.add('active');
+            } else if (hash === '#mri') {
+                mriSection.classList.remove('hidden');
+                navMri.classList.add('active');
+            } else if (hash === '#routine') {
+                routineSection.classList.remove('hidden');
+                navRoutine.classList.add('active');
+            } else if (hash === '#chat') {
+                chatSection.classList.remove('hidden');
+                navChat.classList.add('active');
+            } else {
+                homeSection.classList.remove('hidden');
+                navHome.classList.add('active');
+            }
+        }
+
+        // --- MRI Analysis Functions ---
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                fileName.textContent = file.name;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+                convertToBase64(file);
+                analyzeMriBtn.disabled = false;
+                mriResultSection.classList.add('hidden');
+                mriErrorMessage.classList.add('hidden');
+            }
+        }
+
+        function convertToBase64(file) {
+            mriImageData.mimeType = file.type;
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                mriImageData.base64 = reader.result.split(',')[1];
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function handleMriAnalysis() {
+            if (!mriImageData.base64) {
+                showError(mriErrorMessage, "Please upload an MRI scan first.");
+                return;
+            }
+            mriResultSection.classList.remove('hidden');
+            mriLoader.classList.remove('hidden');
+            mriResultText.innerHTML = '';
+            analyzeMriBtn.disabled = true;
+            mriErrorMessage.classList.add('hidden');
+
+            try {
+                const prompt = `Analyze this brain MRI scan for signs of Alzheimer's disease. Structure your response with the following markdown headings: "**Conclusion:**", "**Key Observations:**", and "**Disclaimer:**". Under "Key Observations:", list your findings as bullet points starting with an asterisk. Under "Disclaimer:", include the standard text about this not being a medical diagnosis.`;
+                const analysisResult = await callGeminiAPI(prompt, [{ inlineData: { mimeType: mriImageData.mimeType, data: mriImageData.base64 } }]);
+                displayResult(mriResultText, analysisResult);
+            } catch (error) {
+                console.error("MRI API Call Error:", error);
+                showError(mriErrorMessage, `Error: ${error.message}`);
+            } finally {
+                mriLoader.classList.add('hidden');
+                analyzeMriBtn.disabled = false;
+            }
+        }
+
+        // --- Voice Analysis Functions ---
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    audioPlayer.src = audioUrl;
+                    audioPlaybackSection.classList.remove('hidden');
+                    analyzeVoiceBtn.disabled = false;
+                    audioChunks = [];
+                };
+                mediaRecorder.start();
+                startRecordBtn.disabled = true;
+                startRecordBtn.classList.add('recording');
+                stopRecordBtn.disabled = false;
+                analyzeVoiceBtn.disabled = true;
+                voiceResultSection.classList.add('hidden');
+                voiceErrorMessage.classList.add('hidden');
+            } catch (err) {
+                console.error("Error accessing microphone:", err);
+                showError(voiceErrorMessage, "Could not access microphone. Please grant permission and try again.");
+            }
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            startRecordBtn.disabled = false;
+            startRecordBtn.classList.remove('recording');
+            stopRecordBtn.disabled = true;
+        }
+
+        async function handleVoiceAnalysis() {
+            voiceResultSection.classList.remove('hidden');
+            voiceLoader.classList.remove('hidden');
+            voiceResultText.innerHTML = '';
+            analyzeVoiceBtn.disabled = true;
+            voiceErrorMessage.classList.add('hidden');
+
+            try {
+                const prompt = `A user read the following text aloud: "${textToRead}". Analyze this text for linguistic markers potentially associated with early-stage Alzheimer's. Structure your response with the following markdown headings: "**Conclusion:**", "**Linguistic Analysis:**", and "**Disclaimer:**". Under "Linguistic Analysis:", list your findings as bullet points starting with an asterisk. Under "Disclaimer:", include the standard text about this being a simulation and not a real medical diagnosis based on speech.`;
+                const analysisResult = await callGeminiAPI(prompt, []);
+                displayResult(voiceResultText, analysisResult);
+            } catch (error) {
+                console.error("Voice API Call Error:", error);
+                showError(voiceErrorMessage, `Error: ${error.message}`);
+            } finally {
+                voiceLoader.classList.add('hidden');
+                analyzeVoiceBtn.disabled = false; 
+            }
+        }
+
+        // --- Routine Generation Function ---
+        async function handleGenerateActivity(event) {
+            const btn = event.currentTarget;
+            const timeOfDay = btn.dataset.time;
+            const activityElementId = `${timeOfDay}-activity`;
+            const activityElement = document.getElementById(activityElementId);
+
+            btn.disabled = true;
+            btn.innerHTML = `<div class="loader mx-auto" style="width:20px; height:20px; border-top-color:white;"></div>`;
+            routineErrorMessage.classList.add('hidden');
+
+            try {
+                const prompt = `Suggest one creative and simple ${timeOfDay} activity for a person with Alzheimer's. The activity should be safe and engaging. Describe it in one or two sentences.`;
+                const newActivity = await callGeminiAPI(prompt, []);
+                activityElement.innerHTML = `<strong>${timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)} Activity:</strong> ${newActivity}`;
+            } catch (error) {
+                console.error("Activity Generation Error:", error);
+                showError(routineErrorMessage, `Failed to generate activity. Please try again.`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `✨ Generate ${timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)} Activity`;
+            }
+        }
+
+        // --- Chatbot Functions ---
+        async function handleChatSubmit(event) {
+            event.preventDefault();
+            const userInput = chatInput.value.trim();
+            if (!userInput) return;
+
+            addMessageToChatWindow('user', userInput);
+            chatInput.value = '';
+            chatForm.querySelector('button').disabled = true;
+            addMessageToChatWindow('model', '...'); // Typing indicator
+
+            try {
+                // The first part of the history is the system instruction
+                const systemInstruction = {
+                    role: "system",
+                    parts: [{ text: "You are an empathetic and supportive AI assistant for caregivers of people with Alzheimer's. Provide practical, safe, and compassionate advice. Do not provide medical diagnoses. Keep your responses concise and easy to understand." }]
+                };
+                
+                // Add user message to history
+                chatHistory.push({ role: "user", parts: [{ text: userInput }] });
+
+                const responseText = await callGeminiAPI(null, null, [systemInstruction, ...chatHistory]);
+                
+                // Add model response to history
+                chatHistory.push({ role: "model", parts: [{ text: responseText }] });
+                
+                updateLastModelMessage(responseText);
+
+            } catch (error) {
+                console.error("Chat API Error:", error);
+                updateLastModelMessage("Sorry, I encountered an error. Please try again.");
+                showError(chatErrorMessage, `Error: ${error.message}`);
+            } finally {
+                chatForm.querySelector('button').disabled = false;
+            }
+        }
+
+        function addMessageToChatWindow(role, text) {
+            const messageDiv = document.createElement('div');
+            const contentDiv = document.createElement('div');
+            contentDiv.className = `p-3 rounded-lg max-w-md ${role === 'user' ? 'bg-blue-500 text-white ml-auto' : 'bg-gray-200 text-gray-800'}`;
+            contentDiv.textContent = text;
+            messageDiv.appendChild(contentDiv);
+            chatWindow.appendChild(messageDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight; // Auto-scroll
+        }
+
+        function updateLastModelMessage(text) {
+            const lastMessageContent = chatWindow.lastChild.querySelector('div');
+            if (lastMessageContent) {
+                lastMessageContent.textContent = text;
+            }
+        }
+
+
+        // --- Generic Gemini API Caller ---
+        async function callGeminiAPI(prompt, additionalParts, history = []) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            
+            let contents;
+            if (history.length > 0) {
+                contents = history;
+            } else {
+                const parts = [{ text: prompt }];
+                if (additionalParts && additionalParts.length > 0) {
+                    parts.push(...additionalParts);
+                }
+                contents = [{ role: "user", parts: parts }];
+            }
+            
+            const payload = {
+                contents: contents,
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 2048
+                }
+            };
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`API request failed: ${errorData.error.message}`);
+            }
+
+            const result = await response.json();
+            const candidate = result.candidates && result.candidates[0];
+
+            if (candidate && candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+                return candidate.content.parts[0].text;
+            } else {
+                console.warn("Unexpected API response structure:", result);
+                if (candidate && candidate.finishReason && candidate.finishReason !== 'STOP') {
+                    throw new Error(`Analysis stopped by the model. Reason: ${candidate.finishReason}`);
+                }
+                if (result.promptFeedback && result.promptFeedback.blockReason) {
+                    throw new Error(`Request was blocked. Reason: ${result.promptFeedback.blockReason}`);
+                }
+                throw new Error("The model did not return a valid analysis.");
+            }
+        }
+
+        // --- UI Helper Functions ---
+        function displayResult(element, result) {
+            element.innerHTML = '';
+            
+            const sections = result.split(/\*\*(.*?):\*\*/).filter(Boolean);
+
+            for (let i = 0; i < sections.length; i += 2) {
+                const title = sections[i];
+                const content = sections[i+1];
+
+                if (title && content) {
+                    const sectionDiv = document.createElement('div');
+                    sectionDiv.className = 'mb-4';
+
+                    const titleEl = document.createElement('h3');
+                    titleEl.className = 'text-lg font-semibold text-gray-800 mb-2 border-b pb-1';
+                    titleEl.textContent = title;
+                    sectionDiv.appendChild(titleEl);
+
+                    if (content.includes('*')) {
+                        const list = document.createElement('ul');
+                        list.className = 'list-disc list-inside space-y-1 text-gray-700';
+                        const items = content.trim().split('*').filter(Boolean);
+                        items.forEach(itemText => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = itemText.trim();
+                            list.appendChild(listItem);
+                        });
+                        sectionDiv.appendChild(list);
+                    } else {
+                        const contentEl = document.createElement('p');
+                        contentEl.className = 'text-gray-700';
+                        contentEl.textContent = content.trim();
+                        sectionDiv.appendChild(contentEl);
+                    }
+                    element.appendChild(sectionDiv);
+                }
+            }
+            element.classList.remove('hidden');
+        }
+
+        function showError(element, message) {
+            element.textContent = message;
+            element.classList.remove('hidden');
+        }
+    </script>
+
+</body>
+</html>
