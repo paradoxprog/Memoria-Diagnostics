@@ -378,25 +378,24 @@
             addMessageToChatWindow('model', '...'); // Typing indicator
 
             try {
-                // The first part of the history is the system instruction
-                const systemInstruction = {
-                    role: "system",
-                    parts: [{ text: "You are an empathetic and supportive AI assistant for caregivers of people with Alzheimer's. Provide practical, safe, and compassionate advice. Do not provide medical diagnoses. Keep your responses concise and easy to understand." }]
-                };
-                
-                // Add user message to history
-                chatHistory.push({ role: "user", parts: [{ text: userInput }] });
+                const systemInstruction = `You are an empathetic and supportive AI assistant for caregivers of people with Alzheimer's. Provide practical, safe, and compassionate advice. Do not provide medical diagnoses. Structure your responses with markdown for clarity (e.g., use **headings** and * bullet points).`;
 
-                const responseText = await callGeminiAPI(null, null, [systemInstruction, ...chatHistory]);
+                let fullPrompt = userInput;
+                if (chatHistory.length === 0) {
+                    fullPrompt = `${systemInstruction}\n\n**User Question:**\n${userInput}`;
+                }
+
+                chatHistory.push({ role: "user", parts: [{ text: fullPrompt }] });
+
+                const responseText = await callGeminiAPI(null, null, chatHistory);
                 
-                // Add model response to history
                 chatHistory.push({ role: "model", parts: [{ text: responseText }] });
                 
-                updateLastModelMessage(responseText);
+                updateLastModelMessage(responseText, true); // Pass true to format the response
 
             } catch (error) {
                 console.error("Chat API Error:", error);
-                updateLastModelMessage("Sorry, I encountered an error. Please try again.");
+                updateLastModelMessage("Sorry, I encountered an error. Please try again.", false);
                 showError(chatErrorMessage, `Error: ${error.message}`);
             } finally {
                 chatForm.querySelector('button').disabled = false;
@@ -406,18 +405,53 @@
         function addMessageToChatWindow(role, text) {
             const messageDiv = document.createElement('div');
             const contentDiv = document.createElement('div');
-            contentDiv.className = `p-3 rounded-lg max-w-md ${role === 'user' ? 'bg-blue-500 text-white ml-auto' : 'bg-gray-200 text-gray-800'}`;
+            contentDiv.className = `p-3 rounded-lg max-w-md text-left ${role === 'user' ? 'bg-blue-500 text-white ml-auto' : 'bg-gray-200 text-gray-800'}`;
             contentDiv.textContent = text;
             messageDiv.appendChild(contentDiv);
             chatWindow.appendChild(messageDiv);
-            chatWindow.scrollTop = chatWindow.scrollHeight; // Auto-scroll
+            chatWindow.scrollTop = chatWindow.scrollHeight;
         }
 
-        function updateLastModelMessage(text) {
+        function updateLastModelMessage(text, isFormatted = false) {
             const lastMessageContent = chatWindow.lastChild.querySelector('div');
             if (lastMessageContent) {
-                lastMessageContent.textContent = text;
+                if (isFormatted) {
+                    lastMessageContent.innerHTML = formatChatMessage(text);
+                } else {
+                    lastMessageContent.textContent = text;
+                }
             }
+        }
+
+        function formatChatMessage(text) {
+            // Replace **headings** with <strong> tags
+            let formattedText = text.replace(/\*\*(.*?):\*\*/g, '<strong class="font-semibold block mt-2 mb-1">$1</strong>');
+            
+            // Replace * list items with HTML list items
+            const lines = formattedText.split('\n');
+            let inList = false;
+            const processedLines = lines.map(line => {
+                const trimmedLine = line.trim();
+                if (trimmedLine.startsWith('*')) {
+                    if (!inList) {
+                        inList = true;
+                        return '<ul><li class="list-disc ml-5">' + trimmedLine.substring(1).trim() + '</li>';
+                    }
+                    return '<li class="list-disc ml-5">' + trimmedLine.substring(1).trim() + '</li>';
+                } else {
+                    if (inList) {
+                        inList = false;
+                        return '</ul>' + trimmedLine;
+                    }
+                    return trimmedLine;
+                }
+            });
+
+            if (inList) {
+                processedLines.push('</ul>');
+            }
+
+            return processedLines.join('<br>').replace(/<br><ul>/g, '<ul>').replace(/<\/ul><br>/g, '</ul>');
         }
 
 
