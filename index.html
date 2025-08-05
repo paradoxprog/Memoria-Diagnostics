@@ -115,7 +115,7 @@
             apiKey: "AIzaSyDLbUxiTD0zjcvbhFvHMS7AsPJzeMZh01g",
             authDomain: "mindguard-e765c.firebaseapp.com",
             projectId: "mindguard-e765c",
-            storageBucket: "mindguard-e765c.appspot.com", // Corrected storageBucket URL
+            storageBucket: "mindguard-e765c.appspot.com",
             messagingSenderId: "362301597754",
             appId: "1:362301597754:web:43c17fd6b4db6a66e3ed03",
             measurementId: "G-Z2EK1RSDKD"
@@ -171,7 +171,7 @@
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     console.log('Signed up:', userCredential.user);
-                    window.location.href = './app.html'; // Redirect to your main app page
+                    window.location.href = './main.html'; // Redirect to your main app page
                 })
                 .catch((error) => {
                     signupError.textContent = error.message;
@@ -187,7 +187,7 @@
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     console.log('Logged in:', userCredential.user);
-                    window.location.href = './app.html'; // Redirect to your main app page
+                    window.location.href = './main.html'; // Redirect to your main app page
                 })
                 .catch((error) => {
                     loginError.textContent = error.message;
@@ -199,7 +199,7 @@
             signInWithPopup(auth, provider)
                 .then((result) => {
                     console.log('Google auth success:', result.user);
-                    window.location.href = './app.html'; // Redirect to your main app page
+                    window.location.href = './main.html'; // Redirect to your main app page
                 }).catch((error) => {
                     loginError.textContent = error.message;
                     signupError.textContent = error.message;
