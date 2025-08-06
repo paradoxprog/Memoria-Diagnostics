@@ -74,7 +74,34 @@
                     <a href="#routine" class="nav-card block bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow text-left"><div class="flex items-center"><svg class="w-10 h-10 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><h2 class="ml-4 text-xl font-semibold text-gray-800">Coping Routine</h2></div><p class="mt-2 text-gray-600">View a suggested daily routine and generate new activity ideas to help manage symptoms.</p></a>
                     <a href="#chat" class="nav-card block bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow text-left"><div class="flex items-center"><svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg><h2 class="ml-4 text-xl font-semibold text-gray-800">Caregiver Chat</h2></div><p class="mt-2 text-gray-600">Ask questions and get supportive advice from an AI assistant designed for caregivers.</p></a>
                 </div>
-             </main>
+
+                <!-- New Gemini Features for Home Page -->
+                <div class="mt-12 pt-8 border-t-2 border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Daily Cognitive Boost -->
+                    <div class="bg-blue-50 p-6 rounded-lg shadow-sm text-left">
+                        <h2 class="text-xl font-semibold text-blue-700 mb-4">🧠 Daily Cognitive Boost</h2>
+                        <p class="text-gray-600 mb-4">Get a quick, positive tip or a simple activity idea to support cognitive well-being.</p>
+                        <button id="generate-cognitive-boost-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
+                            Get a Boost!
+                        </button>
+                        <div id="cognitive-boost-loader" class="loader mx-auto my-4 hidden" style="width:20px; height:20px; border-top-color:#2563eb;"></div>
+                        <div id="cognitive-boost-result" class="mt-4 p-3 rounded-md bg-blue-100 text-blue-800 hidden"></div>
+                        <div id="cognitive-boost-error-message" class="mt-4 text-center text-red-500 font-medium hidden"></div>
+                    </div>
+
+                    <!-- Alzheimer's Insight of the Day -->
+                    <div class="bg-green-50 p-6 rounded-lg shadow-sm text-left">
+                        <h2 class="text-xl font-semibold text-green-700 mb-4">💡 Alzheimer's Insight of the Day</h2>
+                        <p class="text-gray-600 mb-4">Learn a new fact or clarify a common misconception about Alzheimer's disease.</p>
+                        <button id="generate-alzheimers-insight-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
+                            Get an Insight!
+                        </button>
+                        <div id="alzheimers-insight-loader" class="loader mx-auto my-4 hidden" style="width:20px; height:20px; border-top-color:#16a34a;"></div>
+                        <div id="alzheimers-insight-result" class="mt-4 p-3 rounded-md bg-green-100 text-green-800 hidden"></div>
+                        <div id="alzheimers-insight-error-message" class="mt-4 text-center text-red-500 font-medium hidden"></div>
+                    </div>
+                </div>
+            </main>
         </section>
 
         <!-- MRI Analysis Section -->
@@ -223,11 +250,12 @@
         const voiceResultText = document.getElementById('voice-result-text');
         const voiceErrorMessage = document.getElementById('voice-error-message');
         const textToRead = document.getElementById('text-to-read').textContent;
-        const audioUpload = document.getElementById('audio-upload'); // New
-        const audioFileName = document.getElementById('audio-file-name'); // New
+        const audioUpload = document.getElementById('audio-upload');
+        const audioFileName = document.getElementById('audio-file-name');
         let mediaRecorder;
         let audioChunks = [];
-        let uploadedAudioData = { base64: null, mimeType: null }; // New
+        let uploadedAudioData = { base64: null, mimeType: null };
+        let recordedAudioData = { base64: null, mimeType: null }; // New: To store recorded audio data
 
         // --- Routine Section Elements ---
         const generateActivityBtns = document.querySelectorAll('.generate-activity-btn');
@@ -239,6 +267,17 @@
         const chatWindow = document.getElementById('chat-window');
         const chatErrorMessage = document.getElementById('chat-error-message');
         let chatHistory = [];
+
+        // --- New Home Page Gemini Feature Elements ---
+        const generateCognitiveBoostBtn = document.getElementById('generate-cognitive-boost-btn');
+        const cognitiveBoostLoader = document.getElementById('cognitive-boost-loader');
+        const cognitiveBoostResult = document.getElementById('cognitive-boost-result');
+        const cognitiveBoostErrorMessage = document.getElementById('cognitive-boost-error-message');
+
+        const generateAlzheimersInsightBtn = document.getElementById('generate-alzheimers-insight-btn');
+        const alzheimersInsightLoader = document.getElementById('alzheimers-insight-loader');
+        const alzheimersInsightResult = document.getElementById('alzheimers-insight-result');
+        const alzheimersInsightErrorMessage = document.getElementById('alzheimers-insight-error-message');
 
 
         // --- Event Listeners ---
@@ -256,10 +295,15 @@
         analyzeMriBtn.addEventListener('click', handleMriAnalysis);
         startRecordBtn.addEventListener('click', startRecording);
         stopRecordBtn.addEventListener('click', stopRecording);
-        audioUpload.addEventListener('change', handleAudioFileSelect); // New listener
+        audioUpload.addEventListener('change', handleAudioFileSelect);
         analyzeVoiceBtn.addEventListener('click', handleVoiceAnalysis);
         generateActivityBtns.forEach(btn => btn.addEventListener('click', handleGenerateActivity));
         chatForm.addEventListener('submit', handleChatSubmit);
+        
+        // New Home Page Feature Event Listeners
+        generateCognitiveBoostBtn.addEventListener('click', handleGenerateCognitiveBoost);
+        generateAlzheimersInsightBtn.addEventListener('click', handleGenerateAlzheimersInsight);
+
 
         // --- Navigation ---
         function navigate(hash) {
@@ -345,17 +389,22 @@
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = []; // Clear previous chunks
                 uploadedAudioData = { base64: null, mimeType: null }; // Clear uploaded data
+                recordedAudioData = { base64: null, mimeType: null }; // Clear previous recorded data
                 audioFileName.textContent = 'No file selected'; // Clear uploaded file name
                 audioUpload.disabled = true; // Disable upload when recording
 
                 mediaRecorder.ondataavailable = event => {
                     audioChunks.push(event.data);
                 };
-                mediaRecorder.onstop = () => {
+                mediaRecorder.onstop = async () => { // Made async to await convertFileToBase64
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     const audioUrl = URL.createObjectURL(audioBlob);
                     audioPlayer.src = audioUrl;
                     audioPlaybackSection.classList.remove('hidden');
+                    
+                    // Store the recorded audio data as base64
+                    recordedAudioData = await convertFileToBase64(audioBlob);
+
                     analyzeVoiceBtn.disabled = false;
                     audioChunks = []; // Clear chunks after processing
                 };
@@ -402,6 +451,7 @@
                 stopRecordBtn.disabled = true;
                 startRecordBtn.classList.remove('recording');
                 audioChunks = []; // Clear any existing recording chunks
+                recordedAudioData = { base64: null, mimeType: null }; // Clear recorded data
                 voiceResultSection.classList.add('hidden');
                 voiceErrorMessage.classList.add('hidden');
             } else {
@@ -424,18 +474,11 @@
                 const prompt = `A user read the following text aloud: "${textToRead}". Analyze this audio for linguistic markers potentially associated with early-stage Alzheimer's. Pay attention to pace, pauses, and speech patterns. Structure your response with the following markdown headings: "**Conclusion:**", "**Linguistic Analysis:**", and "**Disclaimer:**". Under "Linguistic Analysis:", list your findings as bullet points starting with an asterisk. Under "Disclaimer:", include the standard text about this being a simulation and not a real medical diagnosis based on speech.`;
 
                 let audioParts = [];
-                // Check if we have an uploaded file or a recorded blob
-                if (uploadedAudioData.base64) {
+                // Prioritize recorded audio, then uploaded audio
+                if (recordedAudioData.base64) {
+                    audioParts = [{ inlineData: { mimeType: recordedAudioData.mimeType, data: recordedAudioData.base64 } }];
+                } else if (uploadedAudioData.base64) {
                     audioParts = [{ inlineData: { mimeType: uploadedAudioData.mimeType, data: uploadedAudioData.base64 } }];
-                } else if (audioChunks.length > 0) {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    const base64Audio = await new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onloadend = () => resolve(reader.result.split(',')[1]);
-                        reader.onerror = reject;
-                        reader.readAsDataURL(audioBlob);
-                    });
-                    audioParts = [{ inlineData: { mimeType: 'audio/webm', data: base64Audio } }];
                 } else {
                     showError(voiceErrorMessage, "Please record audio or upload an audio file first.");
                     voiceLoader.classList.add('hidden');
@@ -455,7 +498,7 @@
             }
         }
 
-        // Generic function to convert a File object to base64
+        // Generic function to convert a File or Blob object to base64
         function convertFileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -493,6 +536,48 @@
                 btn.innerHTML = `✨ Generate ${timeOfDay.charAt(0).toUpperCase() + timeOfDay.slice(1)} Activity`;
             }
         }
+
+        // --- New Home Page Gemini Feature Functions ---
+        async function handleGenerateCognitiveBoost() {
+            generateCognitiveBoostBtn.disabled = true;
+            cognitiveBoostLoader.classList.remove('hidden');
+            cognitiveBoostResult.classList.add('hidden');
+            cognitiveBoostErrorMessage.classList.add('hidden');
+
+            try {
+                const prompt = `Provide one concise, positive, and actionable tip or a simple activity idea (1-2 sentences) to support cognitive well-being for someone with early-stage cognitive decline. Focus on engagement and simplicity.`;
+                const boost = await callGeminiAPI(prompt, []);
+                cognitiveBoostResult.textContent = boost;
+                cognitiveBoostResult.classList.remove('hidden');
+            } catch (error) {
+                console.error("Cognitive Boost API Call Error:", error);
+                showError(cognitiveBoostErrorMessage, `Failed to get cognitive boost. Error: ${error.message}`);
+            } finally {
+                cognitiveBoostLoader.classList.add('hidden');
+                generateCognitiveBoostBtn.disabled = false;
+            }
+        }
+
+        async function handleGenerateAlzheimersInsight() {
+            generateAlzheimersInsightBtn.disabled = true;
+            alzheimersInsightLoader.classList.remove('hidden');
+            alzheimersInsightResult.classList.add('hidden');
+            alzheimersInsightErrorMessage.classList.add('hidden');
+
+            try {
+                const prompt = `Provide one concise, interesting fact or clarify a common misconception about Alzheimer's disease (1-2 sentences). Ensure it's accurate and easy to understand.`;
+                const insight = await callGeminiAPI(prompt, []);
+                alzheimersInsightResult.textContent = insight;
+                alzheimersInsightResult.classList.remove('hidden');
+            } catch (error) {
+                console.error("Alzheimer's Insight API Call Error:", error);
+                showError(alzheimersInsightErrorMessage, `Failed to get insight. Error: ${error.message}`);
+            } finally {
+                alzheimersInsightLoader.classList.add('hidden');
+                generateAlzheimersInsightBtn.disabled = false;
+            }
+        }
+
 
         // --- Chatbot Functions ---
         async function handleChatSubmit(event) {
