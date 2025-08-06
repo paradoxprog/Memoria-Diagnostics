@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindGuard - Multi-Modal Alzheimer's Detection</title>
+    <title>Memoria Diagnostics - Multi-Modal Alzheimer's Detection</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -49,7 +49,11 @@
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex-shrink-0">
-                    <a href="#home" class="text-xl font-bold text-gray-800">MindGuard</a>
+                    <!-- Updated: Added logo and changed name to Memoria Diagnostics -->
+                    <a href="#home" class="text-xl font-bold text-gray-800 flex items-center">
+                        <img src="https://placehold.co/32x32/1e40af/ffffff?text=Logo" alt="Memoria Diagnostics Logo" class="w-8 h-8 mr-2 rounded-full">
+                        Memoria Diagnostics
+                    </a>
                 </div>
                 <div class="flex space-x-1 sm:space-x-2">
                     <a href="#home" id="nav-home" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors">Home</a>
@@ -66,7 +70,7 @@
         <!-- Home Section -->
         <section id="home-section" class="page-section">
              <main class="bg-white p-6 sm:p-8 rounded-xl shadow-md text-center">
-                <h1 class="text-4xl font-bold text-gray-900">Welcome to MindGuard</h1>
+                <h1 class="text-4xl font-bold text-gray-900">Welcome to Memoria Diagnostics</h1>
                 <p class="mt-4 text-lg text-gray-600">Your AI-powered assistant for preliminary Alzheimer's detection and daily support. Choose a tool below to get started.</p>
                 <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <a href="#mri" class="nav-card block bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow text-left"><div class="flex items-center"><svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg><h2 class="ml-4 text-xl font-semibold text-gray-800">MRI Analysis</h2></div><p class="mt-2 text-gray-600">Analyze an MRI scan for potential structural signs of Alzheimer's disease.</p></a>
@@ -201,7 +205,7 @@
                     <input type="text" id="chat-input" class="flex-grow border rounded-l-lg p-2" placeholder="Type your message..." autocomplete="off">
                     <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-r-lg">Send</button>
                 </form>
-                   <div id="chat-error-message" class="mt-4 text-center text-red-500 font-medium hidden"></div>
+                    <div id="chat-error-message" class="mt-4 text-center text-red-500 font-medium hidden"></div>
             </main>
         </section>
 
@@ -212,7 +216,8 @@
 
     <script>
         // --- Common Variables ---
-        const apiKey = "AIzaSyBj4nDn-czNrrnJd3vTJh2tYi_vMY_gAyc"; // IMPORTANT: Replace with your actual Gemini API Key
+        // IMPORTANT: Replace with your actual Gemini API Key if deploying
+        const apiKey = "AIzaSyBj4nDn-czNrrnJd3vTJh2tYi_vMY_gAyc"; 
 
         // --- Navigation Elements ---
         const navHome = document.getElementById('nav-home');
