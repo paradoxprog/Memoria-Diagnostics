@@ -51,7 +51,7 @@
                 <div class="flex-shrink-0">
                     <!-- Updated: Logo now uses inline style for pixel-based width, height, and margin-right -->
                     <a href="#home" class="text-xl font-bold text-gray-800 flex items-center">
-                       <img src="logo.jpeg" alt="Memoria Diagnostics Logo" style="width: 68px; height: 68px; margin-right: 10px;" class="rounded-none"> <!-- Adjusted logo size and margin for new header height -->
+                       <img src="https://placehold.co/68x68/E0E7FF/3B82F6?text=MD" alt="Memoria Diagnostics Logo" style="width: 68px; height: 68px; margin-right: 10px;" class="rounded-none"> <!-- Adjusted logo size and margin for new header height -->
                         Memoria Diagnostics
                     </a>
                 </div>
@@ -281,7 +281,7 @@
 
         const generateAlzheimersInsightBtn = document.getElementById('generate-alzheimers-insight-btn');
         const alzheimersInsightLoader = document.getElementById('alzheimers-insight-loader');
-        const alzheimersInsightResult = document = document.getElementById('alzheimers-insight-result');
+        const alzheimersInsightResult = document.getElementById('alzheimers-insight-result');
         const alzheimersInsightErrorMessage = document.getElementById('alzheimers-insight-error-message');
 
 
@@ -401,6 +401,14 @@
                 mediaRecorder.ondataavailable = event => {
                     audioChunks.push(event.data);
                 };
+
+                // Add an error handler for MediaRecorder
+                mediaRecorder.onerror = (e) => {
+                    console.error("MediaRecorder error:", e.error);
+                    showError(voiceErrorMessage, `Recording failed: ${e.error.name}. Please ensure microphone access is granted.`);
+                    stopRecording(); // Attempt to stop cleanly
+                };
+
                 mediaRecorder.onstop = async () => { // Made async to await convertFileToBase64
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     const audioUrl = URL.createObjectURL(audioBlob);
@@ -416,18 +424,21 @@
                 mediaRecorder.start();
                 startRecordBtn.disabled = true;
                 startRecordBtn.classList.add('recording');
-                stopRecordBtn.disabled = true;
+                stopRecordBtn.disabled = false; // <<< CORRECTED LINE: Enable stop button
                 analyzeVoiceBtn.disabled = true;
                 voiceResultSection.classList.add('hidden');
                 voiceErrorMessage.classList.add('hidden');
             } catch (err) {
                 console.error("Error accessing microphone:", err);
                 showError(voiceErrorMessage, "Could not access microphone. Please grant permission and try again.");
+                startRecordBtn.disabled = false; // Enable start button again on error
             }
         }
 
         function stopRecording() {
-            mediaRecorder.stop();
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
             startRecordBtn.disabled = false;
             startRecordBtn.classList.remove('recording');
             stopRecordBtn.disabled = true;
@@ -465,6 +476,8 @@
                 audioPlaybackSection.classList.add('hidden');
                 uploadedAudioData = { base64: null, mimeType: null };
                 analyzeVoiceBtn.disabled = true;
+                // Re-enable start record button if no file is selected
+                startRecordBtn.disabled = false; 
             }
         }
 
