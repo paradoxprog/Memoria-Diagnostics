@@ -701,7 +701,12 @@
 
 
         // --- Generic Gemini API Caller ---
-        async function callGeminiAPI(prompt, additionalParts, history = []) {
+        async function callGeminiAPI(prompt, additionalParts, history = [], retries = 0) {
+            // Check if API key is available. If not, provide a specific error to the user.
+            if (!apiKey || apiKey === "") {
+                throw new Error("API key is not configured. Please ensure your Canvas environment provides the API key.");
+            }
+
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
             
             let contents;
@@ -725,32 +730,43 @@
                 }
             };
 
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`API request failed: ${errorData.error.message}`);
-            }
-
-            const result = await response.json();
-            const candidate = result.candidates && result.candidates[0];
-
-            if (candidate && candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
-                return candidate.content.parts[0].text;
-            } else {
-                console.warn("Unexpected API response structure:", result);
-                // Provide more specific error messages based on API response feedback
-                if (candidate && candidate.finishReason && candidate.finishReason !== 'STOP') {
-                    throw new Error(`Analysis stopped by the model. Reason: ${candidate.finishReason}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    // Implement exponential backoff for retriable errors (e.g., 429 Too Many Requests, 5xx server errors)
+                    if ((response.status === 429 || response.status >= 500) && retries < 5) { // Max 5 retries
+                        const delay = Math.pow(2, retries) * 1000 + Math.random() * 1000; // Exponential backoff with jitter
+                        console.warn(`Retrying API call in ${delay / 1000} seconds... (Attempt ${retries + 1})`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return callGeminiAPI(prompt, additionalParts, history, retries + 1); // Recursive call with incremented retries
+                    }
+                    throw new Error(`API request failed: ${errorData.error.message}`);
                 }
-                if (result.promptFeedback && result.promptFeedback.blockReason) {
-                    throw new Error(`Request was blocked by safety settings. Reason: ${result.promptFeedback.blockReason}`);
+
+                const result = await response.json();
+                const candidate = result.candidates && result.candidates[0];
+
+                if (candidate && candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+                    return candidate.content.parts[0].text;
+                } else {
+                    console.warn("Unexpected API response structure:", result);
+                    // Provide more specific error messages based on API response feedback
+                    if (candidate && candidate.finishReason && candidate.finishReason !== 'STOP') {
+                        throw new Error(`Analysis stopped by the model. Reason: ${candidate.finishReason}`);
+                    }
+                    if (result.promptFeedback && result.promptFeedback.blockReason) {
+                        throw new Error(`Request was blocked by safety settings. Reason: ${result.promptFeedback.blockReason}`);
+                    }
+                    throw new Error("The model did not return a valid analysis.");
                 }
-                throw new Error("The model did not return a valid analysis.");
+            } catch (error) {
+                throw error; // Re-throw the error for the calling function to handle
             }
         }
 
