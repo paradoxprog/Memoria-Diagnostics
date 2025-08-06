@@ -49,9 +49,9 @@
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex-shrink-0">
-                    <!-- Updated: Added logo and changed name to Memoria Diagnostics -->
+                    <!-- Updated: Logo is now square, larger, and uses the provided image -->
                     <a href="#home" class="text-xl font-bold text-gray-800 flex items-center">
-                        <img src="logo.jpeg" alt="Memoria Diagnostics Logo" class="w-15 h-15 mr-2 rounded-none">
+                        <img src="logo.jpeg" alt="Memoria Diagnostics Logo" class="w-12 h-12 mr-2 rounded-none">
                         Memoria Diagnostics
                     </a>
                 </div>
@@ -217,7 +217,7 @@
     <script>
         // --- Common Variables ---
         // IMPORTANT: Replace with your actual Gemini API Key if deploying
-        const apiKey = "AIzaSyBj4nDn-czNrrnJd3vTJh2tYi_vMY_gAyc"; 
+        const apiKey = ""; 
 
         // --- Navigation Elements ---
         const navHome = document.getElementById('nav-home');
@@ -416,7 +416,7 @@
                 mediaRecorder.start();
                 startRecordBtn.disabled = true;
                 startRecordBtn.classList.add('recording');
-                stopRecordBtn.disabled = false;
+                stopRecordBtn.disabled = true;
                 analyzeVoiceBtn.disabled = true;
                 voiceResultSection.classList.add('hidden');
                 voiceErrorMessage.classList.add('hidden');
