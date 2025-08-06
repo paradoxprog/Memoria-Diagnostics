@@ -702,10 +702,8 @@
 
         // --- Generic Gemini API Caller ---
         async function callGeminiAPI(prompt, additionalParts, history = [], retries = 0) {
-            // Check if API key is available. If not, provide a specific error to the user.
-            if (!apiKey || apiKey === "") {
-                throw new Error("API key is not configured. Please ensure your Canvas environment provides the API key.");
-            }
+            // The API key is expected to be provided by the Canvas environment at runtime.
+            // No explicit validation for apiKey here, as per instructions.
 
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
             
