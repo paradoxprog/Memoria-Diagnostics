@@ -12,6 +12,10 @@
             font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
         }
+        /* Added: Prevents body scrolling when modal is open */
+        body.overflow-hidden {
+            overflow: hidden;
+        }
         .modal {
             transition: opacity 0.3s ease;
         }
@@ -149,10 +153,14 @@
         const showModal = (modal) => {
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            // Added: Prevent body scrolling when modal is open
+            document.body.classList.add('overflow-hidden');
         };
         const hideModal = (modal) => {
             modal.classList.add('opacity-0');
             setTimeout(() => modal.classList.add('hidden'), 300);
+            // Added: Re-enable body scrolling when modal is closed
+            document.body.classList.remove('overflow-hidden');
         };
 
         loginBtn.addEventListener('click', () => showModal(loginModal));
@@ -233,7 +241,3 @@
 
 </body>
 </html>
-
-
-
-
