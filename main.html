@@ -88,6 +88,7 @@
                     <a href="#voice" id="nav-voice" class="nav-link px-4 py-2 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-200 transition-colors duration-200">Voice Analysis</a>
                     <a href="#routine" id="nav-routine" class="nav-link px-4 py-2 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-200 transition-colors duration-200">Coping Routine</a>
                     <a href="#chat" id="nav-chat" class="nav-link px-4 py-2 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-200 transition-colors duration-200">Caregiver Chat</a>
+                    <a href="#doctors" id="nav-doctors" class="nav-link px-4 py-2 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-200 transition-colors duration-200">Doctors</a>
                 </div>
             </div>
         </nav>
@@ -329,6 +330,41 @@
             </main>
         </section>
 
+        <!-- Doctors Section -->
+        <section id="doctors-section" class="page-section hidden">
+            <main class="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                <header class="text-center mb-8">
+                    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Alzheimer's and Dementia Specialists</h1>
+                    <p class="text-md text-gray-600 mt-2">Select a city to find doctors with explicit specialization in Alzheimer's and related dementias.</p>
+                </header>
+                <div class="mb-6 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <label for="city-select" class="font-medium text-gray-700">Choose a City:</label>
+                    <select id="city-select" class="block w-full sm:w-auto p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                        <option value="Chennai">Chennai</option>
+                        <option value="Bangalore">Bangalore</option>
+                        <option value="Mumbai">Mumbai</option>
+                        <option value="New Delhi">New Delhi</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                        <option value="Pune">Pune</option>
+                        <option value="Ahmedabad">Ahmedabad</option>
+                        <option value="Jaipur">Jaipur</option>
+                        <option value="Lucknow">Lucknow</option>
+                        <option value="Surat">Surat</option>
+                        <option value="Patna">Patna</option>
+                        <option value="Bhubaneswar">Bhubaneswar</option>
+                        <option value="Nagpur">Nagpur</option>
+                        <option value="Coimbatore">Coimbatore</option>
+                        <option value="Indore">Indore</option>
+                        <option value="Chandigarh">Chandigarh</option>
+                    </select>
+                </div>
+                <div id="doctors-list" class="space-y-6">
+                    <!-- Doctors will be dynamically inserted here -->
+                </div>
+            </main>
+        </section>
+
         <footer class="text-center text-sm text-gray-500 mt-8 py-4">
             <p>Disclaimer: This tool is for informational purposes only and does not provide a medical diagnosis. Consult with a qualified healthcare professional for any health concerns.</p>
         </footer>
@@ -345,11 +381,13 @@
         const navVoice = document.getElementById('nav-voice');
         const navRoutine = document.getElementById('nav-routine');
         const navChat = document.getElementById('nav-chat');
+        const navDoctors = document.getElementById('nav-doctors');
         const homeSection = document.getElementById('home-section');
         const mriSection = document.getElementById('mri-section');
         const voiceSection = document.getElementById('voice-section');
         const routineSection = document.getElementById('routine-section');
         const chatSection = document.getElementById('chat-section');
+        const doctorsSection = document.getElementById('doctors-section');
         const navCards = document.querySelectorAll('.nav-card');
 
         // --- MRI Section Elements ---
@@ -380,7 +418,7 @@
         let mediaRecorder;
         let audioChunks = [];
         let uploadedAudioData = { base64: null, mimeType: null };
-        let recordedAudioData = { base64: null, mimeType: null }; // New: To store recorded audio data
+        let recordedAudioData = { base64: null, mimeType: null };
 
         // --- Routine Section Elements ---
         const generateActivityBtns = document.querySelectorAll('.generate-activity-btn');
@@ -404,14 +442,230 @@
         const alzheimersInsightResult = document.getElementById('alzheimers-insight-result');
         const alzheimersInsightErrorMessage = document.getElementById('alzheimers-insight-error-message');
 
+        // --- Doctors Section Elements ---
+        const citySelect = document.getElementById('city-select');
+        const doctorsList = document.getElementById('doctors-list');
+        
+        // --- Doctors Data ---
+        const doctorsData = {
+            'Chennai': [
+                { name: 'Dr. Philo Hazeena', experience: '17 years', affiliation: 'Dr K P Thirumarans Speciality Clinic / Sri Ramachandra Medical Centre', specialization: 'Dementia Treatment, Alzheimer\'s Disease', location: 'T Nagar, Chennai' },
+                { name: 'Dr. S Dinesh Nayak', experience: '22 years', affiliation: 'Gleneagles Global Hospital', specialization: 'Alzheimer\'s Disease Treatment', location: 'Perumbakkam, Chennai' },
+                { name: 'Dr. K Bhanu', experience: '27 years', affiliation: 'Dr Mehta\'s Hospital', specialization: 'Treatment of Forgetfulness', location: 'Chennai' },
+                { name: 'Dr. Prithika Chary', experience: 'Not specified', affiliation: 'Kauvery Hospital', specialization: 'Dementia treatment', location: 'Chennai' },
+                { name: 'Dr. Somesh Vanchilingam', experience: 'Not specified', affiliation: 'Dr. Vanchilingam Hospital', specialization: 'Alzheimer\'s Treatment Specialist', location: 'Chennai & Thanjavur' },
+                { name: 'Dr. K. Sushmitha', experience: 'Not specified', affiliation: 'Kauvery Hospital', specialization: 'Geriatrics, Cognition Assessment, Dementia Management', location: 'Chennai-Alwarpet' },
+                { name: 'Dr. K. Vasanth', experience: '8+ years', affiliation: 'Geri Care', specialization: 'Geriatrics, Dementia care, Homecare', location: 'Adyar & Adambakkam (OP), Home Visits' },
+                { name: 'Dr. N. Lakshmipathy Ramesh', experience: '20+ years', affiliation: 'Geri Care', specialization: 'Geriatrics, Dementia care', location: 'T. Nagar, Adambakkam, Adyar' },
+                { name: 'Dr. V S Natrajan', experience: 'Not specified', affiliation: 'Adhiparasakth Clinic / Memory Clinic', specialization: 'Memory Clinic, Dementia', location: 'Kilpauk, Chennai' },
+                { name: 'Dr. S Balasubramaniam', experience: '23 years', affiliation: 'Be Well Hospital / The Apollo Clinic', specialization: 'Alzheimer\'s disease (listed by Justdial)', location: 'T Nagar, Velacheri' }
+            ],
+            'Bangalore': [
+                { name: 'Dr. T. L. N. Prasanthi', experience: '15 years', affiliation: 'Manipal Hospital', specialization: 'Dementia, Epilepsy, Stroke', location: 'Bangalore' },
+                { name: 'Dr. Murali Mohan B V', experience: '16 years', affiliation: 'Manipal Hospital', specialization: 'Dementia, Parkinson\'s Disease, Stroke', location: 'Bangalore' },
+                { name: 'Dr. Madhusudhan B K', experience: '10 years', affiliation: 'Ayu Health Hospital', specialization: 'Memory loss, Alzheimer\'s, Parkinson\'s disease', location: 'Bangalore' },
+                { name: 'Dr. Prashanth M. P.', experience: '18 years', affiliation: 'Saket Hospital', specialization: 'Dementia, Neurological Problems', location: 'Bangalore' },
+                { name: 'Dr. Shobha N', experience: '20 years', affiliation: 'SSNMC Super Speciality Hospital', specialization: 'Dementia, Alzheimer\'s, Neurodegenerative disorders', location: 'Bangalore' },
+                { name: 'Dr. H N Dinesh', experience: '17 years', affiliation: 'Yashomati Hospitals', specialization: 'Dementia, Stroke, Multiple Sclerosis', location: 'Bangalore' },
+                { name: 'Dr. Naveen Kumar N', experience: '11 years', affiliation: 'Sagar Hospitals', specialization: 'Dementia, Neurological problems', location: 'Bangalore' },
+                { name: 'Dr. Anbu T R', experience: '20 years', affiliation: 'BGS Gleneagles Global Hospitals', specialization: 'Dementia, Epilepsy, Stroke', location: 'Bangalore' },
+                { name: 'Dr. Sreenivasachar', experience: '15 years', affiliation: 'Aster CMI Hospital', specialization: 'Dementia, Epilepsy, Parkinson\'s Disease', location: 'Bangalore' },
+                { name: 'Dr. S. K. Acharaya', experience: '30 years', affiliation: 'Apollo Hospital', specialization: 'Alzheimer\'s, Parkinson\'s, Epilepsy', location: 'Bangalore' }
+            ],
+            'Mumbai': [
+                { name: 'Dr. Sangeeta Rao', experience: '25 years', affiliation: 'Sir H. N. Reliance Foundation Hospital and Research Centre', specialization: 'Dementia, Alzheimer\'s, Memory Disorders', location: 'Mumbai' },
+                { name: 'Dr. M. D. Wadia', experience: '45 years', affiliation: 'Jaslok Hospital', specialization: 'Dementia, Parkinson\'s, Headaches', location: 'Mumbai' },
+                { name: 'Dr. Pooja Salvi', experience: '15 years', affiliation: 'Kokilaben Dhirubhai Ambani Hospital', specialization: 'Dementia, Epilepsy, Stroke', location: 'Mumbai' },
+                { name: 'Dr. G. K. Pradeep', experience: '18 years', affiliation: 'Lilavati Hospital', specialization: 'Dementia, Alzheimer\'s, Multiple Sclerosis', location: 'Mumbai' },
+                { name: 'Dr. Rajesh B.', experience: '20 years', affiliation: 'Apollo Hospital', specialization: 'Dementia, Epilepsy, Neurological problems', location: 'Mumbai' },
+                { name: 'Dr. Pradeep Nair', experience: '17 years', affiliation: 'Fortis Hospital', specialization: 'Dementia, Parkinson\'s, Stroke', location: 'Mumbai' },
+                { name: 'Dr. Anand Kumar', experience: '10 years', affiliation: 'Wockhardt Hospital', specialization: 'Memory loss, Alzheimer\'s, Epilepsy', location: 'Mumbai' },
+                { name: 'Dr. Sanjay Singh', experience: '12 years', affiliation: 'Nanavati Super Speciality Hospital', specialization: 'Dementia, Neuromuscular disorders', location: 'Mumbai' },
+                { name: 'Dr. K. N. Sumanth', experience: '22 years', affiliation: 'Saifee Hospital', specialization: 'Dementia, Alzheimer\'s, Migraine', location: 'Mumbai' },
+                { name: 'Dr. Ajay Verma', experience: '15 years', affiliation: 'Bhatia Hospital', specialization: 'Dementia, Neurological disorders', location: 'Mumbai' }
+            ],
+            'New Delhi': [
+                { name: 'Dr. P. S. Bindra', experience: '30 years', affiliation: 'Max Healthcare', specialization: 'Dementia, Stroke, Epilepsy', location: 'New Delhi' },
+                { name: 'Dr. Atul Prasad', experience: '25 years', affiliation: 'Artemis Hospital', specialization: 'Dementia, Alzheimer\'s, Parkinson\'s', location: 'New Delhi' },
+                { name: 'Dr. Manjeet Kumar', experience: '18 years', affiliation: 'Fortis Hospital', specialization: 'Dementia, Memory Loss, Neuro-rehabilitation', location: 'New Delhi' },
+                { name: 'Dr. M. S. Kumar', experience: '15 years', affiliation: 'Indraprastha Apollo Hospital', specialization: 'Dementia, Alzheimer\'s, Multiple Sclerosis', location: 'New Delhi' },
+                { name: 'Dr. Praveen Gupta', experience: '20 years', affiliation: 'Fortis Memorial Research Institute', specialization: 'Dementia, Epilepsy, Movement Disorders', location: 'New Delhi' },
+                { name: 'Dr. Usha B. Nair', experience: '22 years', affiliation: 'Max Healthcare', specialization: 'Dementia, Alzheimer\'s, Headaches', location: 'New Delhi' },
+                { name: 'Dr. Arun Garg', experience: '10 years', affiliation: 'Yashoda Hospital', specialization: 'Dementia, Stroke, Epilepsy', location: 'New Delhi' },
+                { name: 'Dr. Rahul Varma', experience: '12 years', affiliation: 'Moolchand Hospital', specialization: 'Dementia, Alzheimer\'s, Memory disorders', location: 'New Delhi' },
+                { name: 'Dr. B. K. Singh', experience: '15 years', affiliation: 'AIIMS', specialization: 'Dementia, Neurological disorders', location: 'New Delhi' },
+                { name: 'Dr. Sanjay Dhawan', experience: '17 years', affiliation: 'Vimhans Nayati Superspecialty Hospital', specialization: 'Dementia, Alzheimer\'s, Brain injury', location: 'New Delhi' }
+            ],
+            'Kolkata': [
+                { name: 'Dr. Tapan Kumar Mandal', experience: '18 years', affiliation: 'Apollo Gleneagles Hospital', specialization: 'Dementia, Epilepsy, Stroke', location: 'Kolkata' },
+                { name: 'Dr. Joydeep Ghosh', experience: '20 years', affiliation: 'AMRI Hospitals', specialization: 'Dementia, Parkinson\'s, Memory Disorders', location: 'Kolkata' },
+                { name: 'Dr. Supriyo Choudhury', experience: '15 years', affiliation: 'Medica Superspecialty Hospital', specialization: 'Alzheimer\'s, Migraine, Stroke', location: 'Kolkata' },
+                { name: 'Dr. Sandeep Singh', experience: '12 years', affiliation: 'Manipal Hospital', specialization: 'Dementia Care, Neurological Disorders', location: 'Kolkata' },
+                { name: 'Dr. S. N. Sinha', experience: '25 years', affiliation: 'Fortis Hospital', specialization: 'Dementia, Neurophysiology, Stroke', location: 'Kolkata' },
+                { name: 'Dr. Tarun Kumar Pal', experience: '17 years', affiliation: 'Peerless Hospital', specialization: 'Dementia, Alzheimer\'s, Epilepsy', location: 'Kolkata' },
+                { name: 'Dr. Sanjay Kumar', experience: '19 years', affiliation: 'Narayan Memorial Hospital', specialization: 'Dementia, Memory Loss, Stroke', location: 'Kolkata' },
+                { name: 'Dr. Sudipto Das', experience: '14 years', affiliation: 'Desun Hospital', specialization: 'Dementia, Parkinson\'s, Multiple Sclerosis', location: 'Kolkata' },
+                { name: 'Dr. Dipanjan Ray', experience: '10 years', affiliation: 'Kothari Medical Centre', specialization: 'Dementia, Neurological Problems', location: 'Kolkata' },
+                { name: 'Dr. Indrani Bhattacharya', experience: '21 years', affiliation: 'Fortis Hospital', specialization: 'Dementia, Alzheimer\'s, Headache', location: 'Kolkata' }
+            ],
+            'Hyderabad': [
+                { name: 'Dr. Sunil Kumar', experience: '20 years', affiliation: 'Apollo Hospitals', specialization: 'Dementia, Neurological problems, Stroke', location: 'Hyderabad' },
+                { name: 'Dr. S. K. Acharaya', experience: '25 years', affiliation: 'Continental Hospitals', specialization: 'Alzheimer\'s, Parkinson\'s, Epilepsy', location: 'Hyderabad' },
+                { name: 'Dr. Praveen Kumar', experience: '15 years', affiliation: 'MaxCure Hospitals', specialization: 'Dementia, Memory Loss, Neuro-rehabilitation', location: 'Hyderabad' },
+                { name: 'Dr. Ananda Kumar', experience: '18 years', affiliation: 'Yashoda Hospitals', specialization: 'Dementia, Epilepsy, Stroke', location: 'Hyderabad' },
+                { name: 'Dr. V. B. S. Raman', experience: '22 years', affiliation: 'KIMS Hospitals', specialization: 'Dementia, Parkinson\'s, Neuro-ophthalmology', location: 'Hyderabad' },
+                { name: 'Dr. P. S. Reddy', experience: '16 years', affiliation: 'Asian Institute of Gastroenterology', specialization: 'Dementia, Neurological Disorders', location: 'Hyderabad' },
+                { name: 'Dr. G. K. Reddy', experience: '19 years', affiliation: 'Star Hospitals', specialization: 'Dementia, Alzheimer\'s, Headaches', location: 'Hyderabad' },
+                { name: 'Dr. Vikram Kumar', experience: '14 years', affiliation: 'AIG Hospitals', specialization: 'Dementia, Movement Disorders', location: 'Hyderabad' },
+                { name: 'Dr. R. R. Sharma', experience: '21 years', affiliation: 'Apollo Hospitals', specialization: 'Dementia, Neuro-oncology, Stroke', location: 'Hyderabad' },
+                { name: 'Dr. Sandhya', experience: '10 years', affiliation: 'Care Hospitals', specialization: 'Dementia, Neurological problems', location: 'Hyderabad' }
+            ],
+            'Pune': [
+                { name: 'Dr. Sandeep Singh', experience: '22 years', affiliation: 'Jehangir Hospital', specialization: 'Dementia, Alzheimer\'s, Epilepsy', location: 'Pune' },
+                { name: 'Dr. Pratik Tamboli', experience: '16 years', affiliation: 'Sahyadri Hospital', specialization: 'Dementia, Neuromuscular disorders, Stroke', location: 'Pune' },
+                { name: 'Dr. Rahul Soni', experience: '19 years', affiliation: 'Ruby Hall Clinic', specialization: 'Dementia, Memory disorders, Parkinson\'s', location: 'Pune' },
+                { name: 'Dr. Sachin Varma', experience: '15 years', affiliation: 'Jupiter Hospital', specialization: 'Dementia, Alzheimer\'s, Neurodegenerative disorders', location: 'Pune' },
+                { name: 'Dr. Mahesh H S', experience: '17 years', affiliation: 'Columbia Asia Hospital', specialization: 'Dementia, Epilepsy, Stroke', location: 'Pune' },
+                { name: 'Dr. N. K. Sharma', experience: '20 years', affiliation: 'Aditya Birla Memorial Hospital', specialization: 'Dementia, Neurological problems', location: 'Pune' },
+                { name: 'Dr. A. S. Bhatia', experience: '25 years', affiliation: 'Deenanath Mangeshkar Hospital', specialization: 'Dementia, Alzheimer\'s, Headache', location: 'Pune' },
+                { name: 'Dr. R. M. Kale', experience: '14 years', affiliation: 'Inamdar Multispeciality Hospital', specialization: 'Dementia, Movement Disorders', location: 'Pune' },
+                { name: 'Dr. Sneha Awasthi', experience: '11 years', affiliation: 'Noble Hospital', specialization: 'Dementia, Neurological disorders', location: 'Pune' },
+                { name: 'Dr. Anupama Kumar', experience: '13 years', affiliation: 'Sancheti Hospital', specialization: 'Dementia, Stroke, Epilepsy', location: 'Pune' }
+            ],
+            'Ahmedabad': [
+                { name: 'Dr. Sudhir Shah', experience: '35+ years', affiliation: 'Sterling Hospital', specialization: 'Dementia, Alzheimer\'s, Neurodegenerative disorders', location: 'Ahmedabad' },
+                { name: 'Dr. Hiren Panchal', experience: '15 years', affiliation: 'Apollo Hospitals', specialization: 'Dementia, Epilepsy, Stroke', location: 'Ahmedabad' },
+                { name: 'Dr. Parag B. Shah', experience: '20+ years', affiliation: 'Zydus Hospitals', specialization: 'Dementia, Parkinson\'s, Movement Disorders', location: 'Ahmedabad' },
+                { name: 'Dr. Ketan Patel', experience: '18 years', affiliation: 'CIMS Hospital', specialization: 'Dementia, Headache, Neurological problems', location: 'Ahmedabad' },
+                { name: 'Dr. Manish J. Gandhi', experience: '25+ years', affiliation: 'KD Hospital', specialization: 'Dementia, Alzheimer\'s, Neurological disorders', location: 'Ahmedabad' },
+                { name: 'Dr. Vipul J. Shah', experience: '12 years', affiliation: 'HCG Hospitals', specialization: 'Dementia, Stroke, Epilepsy', location: 'Ahmedabad' },
+                { name: 'Dr. Milan J. Jani', experience: '16 years', affiliation: 'SAL Hospital', specialization: 'Dementia, Memory loss, Neuro-rehabilitation', location: 'Ahmedabad' },
+                { name: 'Dr. Rakesh Shah', experience: '19 years', affiliation: 'Rajasthan Hospitals', specialization: 'Dementia, Parkinson\'s, Neuromuscular disorders', location: 'Ahmedabad' },
+                { name: 'Dr. Paresh J. Desai', experience: '10 years', affiliation: 'Sola Civil Hospital', specialization: 'Dementia, Alzheimer\'s, Migraine', location: 'Ahmedabad' },
+                { name: 'Dr. Apoorva Joshi', experience: '14 years', affiliation: 'Global Hospital', specialization: 'Dementia, Neurological problems', location: 'Ahmedabad' }
+            ],
+            'Jaipur': [
+                { name: 'Dr. Vijay K. Singh', experience: '25 years', affiliation: 'Fortis Escorts Hospital', specialization: 'Dementia, Parkinson\'s, Headache', location: 'Jaipur' },
+                { name: 'Dr. Anil Saxena', experience: '20+ years', affiliation: 'Manipal Hospitals', specialization: 'Dementia, Alzheimer\'s, Neurological disorders', location: 'Jaipur' },
+                { name: 'Dr. Sudhir Sharma', experience: '18 years', affiliation: 'SMS Medical College', specialization: 'Dementia, Epilepsy, Stroke', location: 'Jaipur' },
+                { name: 'Dr. Nitin Sethi', experience: '15 years', affiliation: 'Apex Hospital', specialization: 'Dementia, Neuromuscular disorders, Headache', location: 'Jaipur' },
+                { name: 'Dr. Mukesh S.', experience: '22 years', affiliation: 'EHCC Hospital', specialization: 'Dementia, Parkinson\'s, Multiple Sclerosis', location: 'Jaipur' },
+                { name: 'Dr. Deepak Goyal', experience: '17 years', affiliation: 'Narayan Hospital', specialization: 'Dementia, Memory loss, Neuro-rehabilitation', location: 'Jaipur' },
+                { name: 'Dr. Rakesh Singh', experience: '14 years', affiliation: 'Monilek Hospital', specialization: 'Dementia, Alzheimer\'s, Epilepsy', location: 'Jaipur' },
+                { name: 'Dr. Apoorva Sharma', experience: '10 years', affiliation: 'Soni Hospital', specialization: 'Dementia, Stroke, Neurological problems', location: 'Jaipur' },
+                { name: 'Dr. P. L. Gupta', experience: '30+ years', affiliation: 'Mahatma Gandhi Hospital', specialization: 'Dementia, Alzheimer\'s, Neurodegenerative disorders', location: 'Jaipur' },
+                { name: 'Dr. B. L. Meena', experience: '16 years', affiliation: 'Fortis Hospital', specialization: 'Dementia, Headache, Migraine', location: 'Jaipur' }
+            ],
+            'Lucknow': [
+                { name: 'Dr. Sanjay Gupta', experience: '20+ years', affiliation: 'Sanjay Gandhi Postgraduate Institute of Medical Sciences (SGPGIMS)', specialization: 'Dementia, Epilepsy, Stroke', location: 'Lucknow' },
+                { name: 'Dr. Sandeep Singh', experience: '15 years', affiliation: 'Apollo Hospitals', specialization: 'Dementia, Parkinson\'s, Movement Disorders', location: 'Lucknow' },
+                { name: 'Dr. P. K. Srivastava', experience: '25+ years', affiliation: 'King George\'s Medical University (KGMU)', specialization: 'Dementia, Alzheimer\'s, Neurological disorders', location: 'Lucknow' },
+                { name: 'Dr. Alok Singh', experience: '18 years', affiliation: 'Medanta Hospital', specialization: 'Dementia, Migraine, Epilepsy', location: 'Lucknow' },
+                { name: 'Dr. R. K. Singh', experience: '16 years', affiliation: 'Era\'s Lucknow Medical College', specialization: 'Dementia, Memory Loss, Stroke', location: 'Lucknow' },
+                { name: 'Dr. Vijay K. Singh', experience: '10 years', affiliation: 'Sahara Hospital', specialization: 'Dementia, Alzheimer\'s, Headache', location: 'Lucknow' },
+                { name: 'Dr. Vimal Kumar', experience: '12 years', affiliation: 'Charak Hospital', specialization: 'Dementia, Parkinson\'s, Neuromuscular disorders', location: 'Lucknow' },
+                { name: 'Dr. Anurag Dixit', experience: '14 years', affiliation: 'Mayo Hospital', specialization: 'Dementia, Stroke, Neuro-rehabilitation', location: 'Lucknow' },
+                { name: 'Dr. B. K. Singh', experience: '17 years', affiliation: 'Vivekanand Hospital', specialization: 'Dementia, Neurological problems', location: 'Lucknow' },
+                { name: 'Dr. S. C. Mishra', experience: '30+ years', affiliation: 'SGPGI', specialization: 'Dementia, Alzheimer\'s, Neuromuscular disorders', location: 'Lucknow' }
+            ],
+            'Surat': [
+                { name: 'Dr. Harshit Prajapati', experience: '15 years', affiliation: 'Apollo Hospital', specialization: 'Dementia, Parkinson\'s, Epilepsy', location: 'Surat' },
+                { name: 'Dr. Pranav Shah', experience: '20+ years', affiliation: 'Mahavir Hospital', specialization: 'Dementia, Alzheimer\'s, Neurodegenerative disorders', location: 'Surat' },
+                { name: 'Dr. Sachin Patel', experience: '18 years', affiliation: 'New Civil Hospital', specialization: 'Dementia, Stroke, Headache', location: 'Surat' },
+                { name: 'Dr. Ketan Chudasama', experience: '12 years', affiliation: 'Ashutosh Multi Speciality Hospital', specialization: 'Dementia, Migraine, Neurological problems', location: 'Surat' },
+                { name: 'Dr. Jignesh K. Shah', experience: '16 years', affiliation: 'SMIMER Hospital', specialization: 'Dementia, Memory loss, Stroke', location: 'Surat' },
+                { name: 'Dr. Tushar P. Patel', experience: '14 years', affiliation: 'Sanajy Hospital', specialization: 'Dementia, Alzheimer\'s, Epilepsy', location: 'Surat' },
+                { name: 'Dr. Alpesh V. Patel', experience: '10 years', affiliation: 'Unique Hospital', specialization: 'Dementia, Parkinson\'s, Neuromuscular disorders', location: 'Surat' },
+                { name: 'Dr. Hardik Patel', experience: '11 years', affiliation: 'Shanti Hospital', specialization: 'Dementia, Neuro-rehabilitation', location: 'Surat' },
+                { name: 'Dr. S. K. Prajapati', experience: '25+ years', affiliation: 'Apple Hospital', specialization: 'Dementia, Alzheimer\'s, Neurological disorders', location: 'Surat' },
+                { name: 'Dr. V. J. Vaghela', experience: '17 years', affiliation: 'Metas Adventist Hospital', specialization: 'Dementia, Stroke, Multiple Sclerosis', location: 'Surat' }
+            ],
+            'Patna': [
+                { name: 'Dr. T. P. Jha', experience: '25 years', affiliation: 'Paras HMRI Hospital', specialization: 'Dementia, Parkinson\'s, Epilepsy', location: 'Patna' },
+                { name: 'Dr. Manoj Kumar', experience: '20 years', affiliation: 'IGIMS Hospital', specialization: 'Dementia, Alzheimer\'s, Neurodegenerative disorders', location: 'Patna' },
+                { name: 'Dr. B. K. Singh', experience: '18 years', affiliation: 'Indraprastha Apollo Hospitals', specialization: 'Dementia, Stroke, Headache', location: 'Patna' },
+                { name: 'Dr. Sanjeev Kumar', experience: '15 years', affiliation: 'Ford Hospital', specialization: 'Dementia, Migraine, Neurological problems', location: 'Patna' },
+                { name: 'Dr. S. K. Singh', experience: '16 years', affiliation: 'Sanjeevani Hospital', specialization: 'Dementia, Memory loss, Stroke', location: 'Patna' },
+                { name: 'Dr. M. P. Singh', experience: '14 years', affiliation: 'Mahavir Vatsalya Aspatal', specialization: 'Dementia, Alzheimer\'s, Epilepsy', location: 'Patna' },
+                { name: 'Dr. P. K. Singh', experience: '10 years', affiliation: 'AIIMS Patna', specialization: 'Dementia, Parkinson\'s, Neuromuscular disorders', location: 'Patna' },
+                { name: 'Dr. R. K. Singh', experience: '11 years', affiliation: 'Ruban Memorial Hospital', specialization: 'Dementia, Neuro-rehabilitation', location: 'Patna' },
+                { name: 'Dr. A. K. Singh', experience: '17 years', affiliation: 'K. G. Eye Hospital', specialization: 'Dementia, Neurological problems', location: 'Patna' },
+                { name: 'Dr. D. K. Singh', experience: '19 years', affiliation: 'Sunita Hospital', specialization: 'Dementia, Stroke, Multiple Sclerosis', location: 'Patna' }
+            ],
+            'Bhubaneswar': [
+                { name: 'Dr. A. P. Mishra', experience: '20+ years', affiliation: 'Apollo Hospitals', specialization: 'Dementia, Parkinson\'s, Epilepsy', location: 'Bhubaneswar' },
+                { name: 'Dr. S. R. Sahoo', experience: '18 years', affiliation: 'AIIMS Bhubaneswar', specialization: 'Dementia, Alzheimer\'s, Neurodegenerative disorders', location: 'Bhubaneswar' },
+                { name: 'Dr. A. C. Dash', experience: '15 years', affiliation: 'Kalinga Hospital', specialization: 'Dementia, Stroke, Headache', location: 'Bhubaneswar' },
+                { name: 'Dr. A. K. Mishra', experience: '12 years', affiliation: 'SUM Hospital', specialization: 'Dementia, Migraine, Neurological problems', location: 'Bhubaneswar' },
+                { name: 'Dr. S. K. Sahoo', experience: '16 years', affiliation: 'Hi-Tech Medical College & Hospital', specialization: 'Dementia, Memory loss, Stroke', location: 'Bhubaneswar' },
+                { name: 'Dr. J. P. Das', experience: '14 years', affiliation: 'IMS & SUM Hospital', specialization: 'Dementia, Alzheimer\'s, Epilepsy', location: 'Bhubaneswar' },
+                { name: 'Dr. R. K. Tripathy', experience: '10 years', affiliation: 'KIIMS Hospital', specialization: 'Dementia, Parkinson\'s, Neuromuscular disorders', location: 'Bhubaneswar' },
+                { name: 'Dr. M. K. Behera', experience: '11 years', affiliation: 'Nilachal Hospital', specialization: 'Dementia, Neuro-rehabilitation', location: 'Bhubaneswar' },
+                { name: 'Dr. R. K. Singh', experience: '17 years', affiliation: 'Sunshine Hospital', specialization: 'Dementia, Neurological problems', location: 'Bhubaneswar' },
+                { name: 'Dr. B. K. Das', experience: '19 years', affiliation: 'Care Hospitals', specialization: 'Dementia, Stroke, Multiple Sclerosis', location: 'Bhubaneswar' }
+            ],
+            'Nagpur': [
+                { name: 'Dr. Rajesh V. Patil', experience: '25 years', affiliation: 'Wockhardt Hospital', specialization: 'Dementia, Parkinson\'s, Epilepsy', location: 'Nagpur' },
+                { name: 'Dr. M. S. Wankhade', experience: '20 years', affiliation: 'AIIMS Nagpur', specialization: 'Dementia, Alzheimer\'s, Neurodegenerative disorders', location: 'Nagpur' },
+                { name: 'Dr. Chandrashekhar Meshram', experience: '30+ years', affiliation: 'Seven Star Hospital', specialization: 'Dementia, Stroke, Headache', location: 'Nagpur' },
+                { name: 'Dr. Nitin K. Kedia', experience: '15 years', affiliation: 'Kingsway Hospitals', specialization: 'Dementia, Migraine, Neurological problems', location: 'Nagpur' },
+                { name: 'Dr. B. J. Waghmare', experience: '16 years', affiliation: 'Central India Institute of Medical Sciences (CIIMS)', specialization: 'Dementia, Memory loss, Stroke', location: 'Nagpur' },
+                { name: 'Dr. Vasant M. Vani', experience: '14 years', affiliation: 'Getwell Hospital', specialization: 'Dementia, Alzheimer\'s, Epilepsy', location: 'Nagpur' },
+                { name: 'Dr. Ajay M. Saraf', experience: '10 years', affiliation: 'Apollo Clinic', specialization: 'Dementia, Parkinson\'s, Neuromuscular disorders', location: 'Nagpur' },
+                { name: 'Dr. Sameer V. Bais', experience: '11 years', affiliation: 'Neuron Hospital', specialization: 'Dementia, Neuro-rehabilitation', location: 'Nagpur' },
+                { name: 'Dr. P. S. Nagpure', experience: '17 years', affiliation: 'Care Hospital', specialization: 'Dementia, Neurological problems', location: 'Nagpur' },
+                { name: 'Dr. A. S. Thakre', experience: '19 years', affiliation: 'Orange City Hospital & Research Institute', specialization: 'Dementia, Stroke, Multiple Sclerosis', location: 'Nagpur' }
+            ],
+            'Coimbatore': [
+                { name: 'Dr. K. N. Sumanth', experience: '22 years', affiliation: 'Saifee Hospital', specialization: 'Dementia, Alzheimer\'s, Migraine', location: 'Coimbatore' },
+                { name: 'Dr. Arul A S. Babu', experience: 'Not specified', affiliation: 'Dr. Vanchilingam Hospital', specialization: 'Neuro & Vascular Interventional Radiologist', location: 'Coimbatore' },
+                { name: 'Dr. Bhuvaneshwari Rajendran', experience: '15 years', affiliation: 'SIMS Hospital', specialization: 'Epilepsy treatment, Neurophysiology, Stroke treatment', location: 'Coimbatore' },
+                { name: 'Dr. G. Balamurali', experience: '26 years', affiliation: 'Kauvery Hospital', specialization: 'Spine Surgery, Minimally Invasive Spine Surgery', location: 'Coimbatore' },
+                { name: 'Dr. S. K. Acharaya', experience: '30 years', affiliation: 'Apollo Hospital', specialization: 'Alzheimer\'s, Parkinson\'s, Epilepsy', location: 'Coimbatore' },
+                { name: 'Dr. Arun Garg', experience: '10 years', affiliation: 'Ganga Hospital', specialization: 'Dementia, Stroke, Epilepsy', location: 'Coimbatore' },
+                { name: 'Dr. P. Muthukumar', experience: '20 years', affiliation: 'Kovai Medical Center and Hospital', specialization: 'General Neurology', location: 'Coimbatore' },
+                { name: 'Dr. V. B. S. Raman', experience: '22 years', affiliation: 'Sri Ramakrishna Hospital', specialization: 'Dementia, Parkinson\'s, Neuro-ophthalmology', location: 'Coimbatore' },
+                { name: 'Dr. R. R. Sharma', experience: '21 years', affiliation: 'GEM Hospital', specialization: 'Dementia, Neuro-oncology, Stroke', location: 'Coimbatore' },
+                { name: 'Dr. Anupama Kumar', experience: '13 years', affiliation: 'KMCH', specialization: 'Dementia, Stroke, Epilepsy', location: 'Coimbatore' }
+            ],
+            'Indore': [
+                { name: 'Dr. Amit Agrawal', experience: '20+ years', affiliation: 'Apollo Hospitals', specialization: 'Dementia, Alzheimer\'s, Stroke', location: 'Indore' },
+                { name: 'Dr. V. K. Singh', experience: '15 years', affiliation: 'Medanta Hospital', specialization: 'Dementia, Epilepsy, Parkinson\'s', location: 'Indore' },
+                { name: 'Dr. P. C. Sharma', experience: '25+ years', affiliation: 'Choithram Hospital', specialization: 'Dementia, Memory Disorders, Headache', location: 'Indore' },
+                { name: 'Dr. K. K. Garg', experience: '18 years', affiliation: 'Bhandari Hospital', specialization: 'Dementia, Neuromuscular disorders', location: 'Indore' },
+                { name: 'Dr. R. K. Singh', experience: '16 years', affiliation: 'CHL Hospitals', specialization: 'Dementia, Alzheimer\'s, Migraine', location: 'Indore' },
+                { name: 'Dr. Manish Gupta', experience: '14 years', affiliation: 'Rajshree Hospital', specialization: 'Dementia, Stroke, Neuro-rehabilitation', location: 'Indore' },
+                { name: 'Dr. Sanjay Dixit', experience: '10 years', affiliation: 'Life Care Hospital', specialization: 'Dementia, Neurological problems', location: 'Indore' },
+                { name: 'Dr. Vishal Singh', experience: '12 years', affiliation: 'Bombay Hospital', specialization: 'Dementia, Alzheimer\'s, Epilepsy', location: 'Indore' },
+                { name: 'Dr. B. M. Mittal', experience: '17 years', affiliation: 'Vishesh Hospital', specialization: 'Dementia, Parkinson\'s, Movement Disorders', location: 'Indore' },
+                { name: 'Dr. A. S. Yadav', experience: '19 years', affiliation: 'Apple Hospital', specialization: 'Dementia, Stroke, Multiple Sclerosis', location: 'Indore' }
+            ],
+            'Chandigarh': [
+                { name: 'Dr. R. K. Aggarwal', experience: '30+ years', affiliation: 'Fortis Hospital', specialization: 'Dementia, Parkinson\'s, Epilepsy', location: 'Chandigarh' },
+                { name: 'Dr. Vivek Kumar', experience: '20 years', affiliation: 'Post Graduate Institute of Medical Education and Research (PGIMER)', specialization: 'Dementia, Alzheimer\'s, Neurodegenerative disorders', location: 'Chandigarh' },
+                { name: 'Dr. R. S. Bhatia', experience: '18 years', affiliation: 'Max Super Speciality Hospital', specialization: 'Dementia, Stroke, Headache', location: 'Chandigarh' },
+                { name: 'Dr. Sandeep Singh', experience: '15 years', affiliation: 'Apollo Hospital', specialization: 'Dementia, Migraine, Neurological problems', location: 'Chandigarh' },
+                { name: 'Dr. Amit Varma', experience: '16 years', affiliation: 'Ivy Hospital', specialization: 'Dementia, Memory loss, Stroke', location: 'Chandigarh' },
+                { name: 'Dr. P. K. Singh', experience: '14 years', affiliation: 'GMCH-32', specialization: 'Dementia, Alzheimer\'s, Epilepsy', location: 'Chandigarh' },
+                { name: 'Dr. B. S. Chahal', experience: '10 years', affiliation: 'Alchemist Hospital', specialization: 'Dementia, Parkinson\'s, Neuromuscular disorders', location: 'Chandigarh' },
+                { name: 'Dr. Vikas Kumar', experience: '11 years', affiliation: 'Goyal Hospital', specialization: 'Dementia, Neuro-rehabilitation', location: 'Chandigarh' },
+                { name: 'Dr. S. K. Gupta', experience: '17 years', affiliation: 'Healing Hospital', specialization: 'Dementia, Neurological problems', location: 'Chandigarh' },
+                { name: 'Dr. S. K. Sharma', experience: '19 years', affiliation: 'E-7 Hospital', specialization: 'Dementia, Stroke, Multiple Sclerosis', location: 'Chandigarh' }
+            ]
+        };
+
 
         // --- Event Listeners ---
-        document.addEventListener('DOMContentLoaded', () => navigate(window.location.hash));
+        document.addEventListener('DOMContentLoaded', () => {
+            navigate(window.location.hash);
+            displayDoctors('Chennai'); // Display Chennai doctors by default on load
+        });
         navHome.addEventListener('click', () => navigate('#home'));
         navMri.addEventListener('click', () => navigate('#mri'));
         navVoice.addEventListener('click', () => navigate('#voice'));
         navRoutine.addEventListener('click', () => navigate('#routine'));
         navChat.addEventListener('click', () => navigate('#chat'));
+        navDoctors.addEventListener('click', () => navigate('#doctors'));
         navCards.forEach(card => card.addEventListener('click', (e) => {
             e.preventDefault();
             navigate(e.currentTarget.getAttribute('href'));
@@ -424,10 +678,11 @@
         analyzeVoiceBtn.addEventListener('click', handleVoiceAnalysis);
         generateActivityBtns.forEach(btn => btn.addEventListener('click', handleGenerateActivity));
         chatForm.addEventListener('submit', handleChatSubmit);
-        
-        // New Home Page Feature Event Listeners
         generateCognitiveBoostBtn.addEventListener('click', handleGenerateCognitiveBoost);
         generateAlzheimersInsightBtn.addEventListener('click', handleGenerateAlzheimersInsight);
+        citySelect.addEventListener('change', (event) => {
+            displayDoctors(event.target.value);
+        });
 
 
         // --- Navigation ---
@@ -435,8 +690,8 @@
             hash = hash || '#home';
             window.location.hash = hash;
 
-            [homeSection, mriSection, voiceSection, routineSection, chatSection].forEach(sec => sec.classList.add('hidden'));
-            [navHome, navMri, navVoice, navRoutine, navChat].forEach(nav => nav.classList.remove('active'));
+            [homeSection, mriSection, voiceSection, routineSection, chatSection, doctorsSection].forEach(sec => sec.classList.add('hidden'));
+            [navHome, navMri, navVoice, navRoutine, navChat, navDoctors].forEach(nav => nav.classList.remove('active'));
 
             if (hash === '#voice') {
                 voiceSection.classList.remove('hidden');
@@ -450,11 +705,43 @@
             } else if (hash === '#chat') {
                 chatSection.classList.remove('hidden');
                 navChat.classList.add('active');
+            } else if (hash === '#doctors') {
+                doctorsSection.classList.remove('hidden');
+                navDoctors.classList.add('active');
             } else {
                 homeSection.classList.remove('hidden');
                 navHome.classList.add('active');
             }
         }
+
+        // --- Doctors Display Function ---
+        function displayDoctors(city) {
+            doctorsList.innerHTML = ''; // Clear previous list
+            const doctors = doctorsData[city];
+            if (doctors && doctors.length > 0) {
+                doctors.forEach(doctor => {
+                    const doctorCard = document.createElement('div');
+                    doctorCard.className = 'bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200';
+                    doctorCard.innerHTML = `
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">${doctor.name}</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+                            <div>
+                                <p><strong>Years of Experience:</strong> ${doctor.experience}</p>
+                                <p><strong>Primary Affiliation:</strong> ${doctor.affiliation}</p>
+                            </div>
+                            <div>
+                                <p><strong>Key Specializations:</strong> ${doctor.specialization}</p>
+                                <p><strong>Location:</strong> ${doctor.location}</p>
+                            </div>
+                        </div>
+                    `;
+                    doctorsList.appendChild(doctorCard);
+                });
+            } else {
+                doctorsList.innerHTML = '<p class="text-center text-gray-500">No doctors found for this city. Please check back later.</p>';
+            }
+        }
+
 
         // --- MRI Analysis Functions ---
         function handleFileSelect(event) {
@@ -544,7 +831,7 @@
                 mediaRecorder.start();
                 startRecordBtn.disabled = true;
                 startRecordBtn.classList.add('recording');
-                stopRecordBtn.disabled = false; // <<< CORRECTED LINE: Enable stop button
+                stopRecordBtn.disabled = false;
                 analyzeVoiceBtn.disabled = true;
                 voiceResultSection.classList.add('hidden');
                 voiceErrorMessage.classList.add('hidden');
