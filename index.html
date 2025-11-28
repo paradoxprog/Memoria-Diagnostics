@@ -11,100 +11,184 @@
             font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
         }
-        /* Added: Prevents body scrolling when modal is open */
         body.overflow-hidden {
             overflow: hidden;
         }
         .modal {
             transition: opacity 0.3s ease;
         }
+        /* Back to top button animation */
+        #back-to-top {
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #back-to-top.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
 
-    <header class="bg-white shadow-md sticky top-0 z-20">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="flex items-center text-2xl font-bold text-gray-800">
-                <img src="logo.jpg" alt="CareSync AI Logo" style="width: 64px; height: 64px; margin-right: 8px;" class="rounded-none">
-                CareSync AI
-            </a>
-            <div class="space-x-4">
-                <button id="login-btn" class="text-gray-700 hover:text-blue-500 font-medium">Log In</button>
-                <button id="signup-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Sign Up</button>
+    <header class="bg-white shadow-md sticky top-0 z-30">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="#home" class="flex items-center text-2xl font-bold text-gray-800 hover:opacity-80 transition">
+                    <img src="logo.jpg" alt="CareSync AI Logo" style="width: 50px; height: 50px; margin-right: 8px;" class="rounded-lg">
+                    CareSync AI
+                </a>
+
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#home" class="text-gray-600 hover:text-blue-500 font-medium transition">Home</a>
+                    <a href="#features" class="text-gray-600 hover:text-blue-500 font-medium transition">Features</a>
+                    <a href="#about" class="text-gray-600 hover:text-blue-500 font-medium transition">About</a>
+                </div>
+
+                <div class="hidden md:flex space-x-4">
+                    <button id="login-btn" class="text-gray-700 hover:text-blue-500 font-medium transition">Log In</button>
+                    <button id="signup-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow transition hover:-translate-y-0.5">Sign Up</button>
+                </div>
+
+                <button id="mobile-menu-btn" class="md:hidden text-gray-700 focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 border-t border-gray-100">
+                <a href="#home" class="mobile-link block py-2 text-gray-600 hover:text-blue-500 font-medium">Home</a>
+                <a href="#features" class="mobile-link block py-2 text-gray-600 hover:text-blue-500 font-medium">Features</a>
+                <a href="#about" class="mobile-link block py-2 text-gray-600 hover:text-blue-500 font-medium">About</a>
+                <div class="mt-4 flex flex-col space-y-3">
+                    <button id="login-btn-mobile" class="w-full text-left py-2 text-gray-700 font-medium hover:text-blue-500">Log In</button>
+                    <button id="signup-btn-mobile" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg">Sign Up</button>
+                </div>
             </div>
         </nav>
     </header>
 
-    <section class="bg-white py-20">
+    <section id="home" class="bg-white py-20 lg:py-28">
         <div class="container mx-auto px-6 text-center">
-            <h1 class="text-5xl font-bold text-gray-900">Early Insight, Enhanced Support</h1>
-            <p class="mt-4 text-xl text-gray-600">CareSync AI is an AI-powered tool providing preliminary analysis for early Alzheimer's detection and supportive resources for caregivers.</p>
-            <button id="get-started-btn" class="mt-8 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-lg text-lg">Get Started</button>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                Early Insight, <span class="text-blue-500">Enhanced Support</span>
+            </h1>
+            <p class="mt-6 text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+                CareSync AI combines advanced MRI and voice analysis for preliminary Alzheimer's detection with a compassionate support system for caregivers.
+            </p>
+            <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+                <button id="get-started-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-lg transition hover:-translate-y-1">
+                    Get Started Free
+                </button>
+                <a href="#features" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 px-8 rounded-lg text-lg shadow transition">
+                    Learn More
+                </a>
+            </div>
         </div>
     </section>
 
-    <section id="how-it-works" class="py-20">
-        <div class="container mx-auto px-6 max-w-4xl">
-            <h2 class="text-3xl font-bold text-center text-gray-900">How CareSync AI Helps</h2>
-            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-lg shadow-md text-center">
-                    <svg class="w-16 h-16 text-blue-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    <h3 class="mt-6 text-xl font-semibold">MRI Analysis</h3>
-                    <p class="mt-2 text-gray-600">Upload a brain MRI scan for an AI-powered analysis of potential structural indicators related to Alzheimer's disease.</p>
+    <section id="features" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">How CareSync AI Helps</h2>
+                <p class="mt-4 text-gray-600">Comprehensive tools designed for both detection and daily management.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 text-center group">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">MRI Analysis</h3>
+                    <p class="text-sm text-gray-600">AI-powered structural analysis of brain MRI scans to identify potential early indicators.</p>
                 </div>
-                <div class="bg-white p-8 rounded-lg shadow-md text-center">
-                    <svg class="w-16 h-16 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-                    <h3 class="mt-6 text-xl font-semibold">Voice Analysis</h3>
-                    <p class="mt-2 text-gray-600">Record a short voice sample to analyze linguistic patterns for potential cognitive changes.</p>
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 text-center group">
+                    <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Voice Analysis</h3>
+                    <p class="text-sm text-gray-600">Linguistic pattern recognition from short voice samples to detect cognitive changes.</p>
                 </div>
-                <div class="bg-white p-8 rounded-lg shadow-md text-center">
-                    <svg class="w-16 h-16 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                    <h3 class="mt-6 text-xl font-semibold">Caregiver Chat</h3>
-                    <p class="mt-2 text-gray-600">Get supportive advice and answers to your caregiving questions from our empathetic AI assistant.</p>
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 text-center group">
+                    <div class="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-red-200 transition">
+                        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Caregiver Chat</h3>
+                    <p class="text-sm text-gray-600">24/7 empathetic AI assistant to answer questions and provide caregiving advice.</p>
                 </div>
-                <div class="bg-white p-8 rounded-lg shadow-md text-center">
-                    <svg class="w-16 h-16 text-purple-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    <h3 class="mt-6 text-xl font-semibold">Coping Routine</h3>
-                    <p class="mt-2 text-gray-600">Access a daily routine guide and generate new, creative activity ideas to help manage symptoms.</p>
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 text-center group">
+                    <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-200 transition">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Coping Routine</h3>
+                    <p class="text-sm text-gray-600">Personalized daily routines and activity generation to help manage symptoms and anxiety.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="bg-white py-8">
-        <div class="container mx-auto px-6 text-center text-gray-600">
-            <p>&copy; 2025 CareSync AI. All rights reserved.</p>
-            <p class="text-sm mt-2">Disclaimer: CareSync AI is an informational tool and does not provide medical advice. Consult a healthcare professional for diagnosis.</p>
+    <section id="about" class="py-20 bg-white border-t border-gray-100">
+        <div class="container mx-auto px-6 max-w-4xl text-center">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">Why Early Detection Matters</h2>
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                Alzheimer's disease begins years before symptoms become apparent. Early identification allows families to plan effectively, access treatments sooner, and implement lifestyle changes that can improve quality of life.
+            </p>
+            <p class="text-gray-500 italic">CareSync AI empowers you with the data you need to start the conversation with your doctor.</p>
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-gray-300 py-10 mt-auto">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <span class="text-2xl font-bold text-white">CareSync AI</span>
+                    <p class="text-sm mt-2 text-gray-400">Supporting minds, connecting hearts.</p>
+                </div>
+                <div class="flex space-x-6 text-sm">
+                    <a href="#home" class="hover:text-white transition">Home</a>
+                    <a href="#features" class="hover:text-white transition">Features</a>
+                    <a href="#about" class="hover:text-white transition">About</a>
+                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-500">
+                <p>&copy; 2025 CareSync AI. All rights reserved.</p>
+                <p class="mt-2">Disclaimer: CareSync AI is an informational tool and does not provide medical diagnosis. Always consult a healthcare professional.</p>
+            </div>
         </div>
     </footer>
 
-    <div id="login-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0">
+    <button id="back-to-top" class="hidden fixed bottom-8 right-8 bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-lg z-40 focus:outline-none transition-all">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+    </button>
+
+    <div id="login-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0 z-50">
         <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md relative">
             <button id="close-login-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
             <h2 class="text-2xl font-bold text-center mb-6">Log In to CareSync AI</h2>
             <form id="login-form">
-                <div class="mb-4"><input type="email" id="login-email" placeholder="Email" class="w-full p-3 border rounded-lg" required></div>
-                <div class="mb-6"><input type="password" id="login-password" placeholder="Password" class="w-full p-3 border rounded-lg" required></div>
-                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg">Log In</button>
+                <div class="mb-4"><input type="email" id="login-email" placeholder="Email" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></div>
+                <div class="mb-6"><input type="password" id="login-password" placeholder="Password" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></div>
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition">Log In</button>
             </form>
             <div class="my-6 flex items-center"><div class="flex-grow border-t"></div><span class="mx-4 text-gray-500">or</span><div class="flex-grow border-t"></div></div>
-            <button id="google-login-btn" class="w-full bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold py-3 rounded-lg flex items-center justify-center"><img src="https://www.google.com/favicon.ico" alt="Google icon" class="w-5 h-5 mr-3">Sign In with Google</button>
-            <p id="login-error" class="text-red-500 text-center mt-4"></p>
+            <button id="google-login-btn" class="w-full bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold py-3 rounded-lg flex items-center justify-center transition"><img src="https://www.google.com/favicon.ico" alt="Google icon" class="w-5 h-5 mr-3">Sign In with Google</button>
+            <p id="login-error" class="text-red-500 text-center mt-4 text-sm"></p>
         </div>
     </div>
 
-    <div id="signup-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0">
+    <div id="signup-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0 z-50">
         <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md relative">
             <button id="close-signup-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
             <h2 class="text-2xl font-bold text-center mb-6">Create Your Account</h2>
             <form id="signup-form">
-                <div class="mb-4"><input type="email" id="signup-email" placeholder="Email" class="w-full p-3 border rounded-lg" required></div>
-                <div class="mb-6"><input type="password" id="signup-password" placeholder="Password" class="w-full p-3 border rounded-lg" required></div>
-                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg">Sign Up</button>
+                <div class="mb-4"><input type="email" id="signup-email" placeholder="Email" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></div>
+                <div class="mb-6"><input type="password" id="signup-password" placeholder="Password" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></div>
+                <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition">Sign Up</button>
             </form>
             <div class="my-6 flex items-center"><div class="flex-grow border-t"></div><span class="mx-4 text-gray-500">or</span><div class="flex-grow border-t"></div></div>
-            <button id="google-signup-btn" class="w-full bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold py-3 rounded-lg flex items-center justify-center"><img src="https://www.google.com/favicon.ico" alt="Google icon" class="w-5 h-5 mr-3">Sign Up with Google</button>
-            <p id="signup-error" class="text-red-500 text-center mt-4"></p>
+            <button id="google-signup-btn" class="w-full bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold py-3 rounded-lg flex items-center justify-center transition"><img src="https://www.google.com/favicon.ico" alt="Google icon" class="w-5 h-5 mr-3">Sign Up with Google</button>
+            <p id="signup-error" class="text-red-500 text-center mt-4 text-sm"></p>
         </div>
     </div>
 
@@ -129,9 +213,45 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
+        // --- Navigation Logic (Mobile Menu & Back to Top) ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        const backToTopBtn = document.getElementById('back-to-top');
+
+        // Toggle Mobile Menu
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when a link is clicked
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Back to Top Button Visibility
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopBtn.classList.remove('hidden');
+                setTimeout(() => backToTopBtn.style.opacity = '1', 10);
+            } else {
+                backToTopBtn.style.opacity = '0';
+                setTimeout(() => backToTopBtn.classList.add('hidden'), 300);
+            }
+        });
+
+        // Smooth scroll to top
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
         // --- Modal Elements & Logic ---
         const loginBtn = document.getElementById('login-btn');
         const signupBtn = document.getElementById('signup-btn');
+        const loginBtnMobile = document.getElementById('login-btn-mobile');
+        const signupBtnMobile = document.getElementById('signup-btn-mobile');
         const getStartedBtn = document.getElementById('get-started-btn');
         const loginModal = document.getElementById('login-modal');
         const signupModal = document.getElementById('signup-modal');
@@ -141,18 +261,24 @@
         const showModal = (modal) => {
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
-            // Added: Prevent body scrolling when modal is open
             document.body.classList.add('overflow-hidden');
+            // Close mobile menu if open
+            mobileMenu.classList.add('hidden');
         };
         const hideModal = (modal) => {
             modal.classList.add('opacity-0');
             setTimeout(() => modal.classList.add('hidden'), 300);
-            // Added: Re-enable body scrolling when modal is closed
             document.body.classList.remove('overflow-hidden');
         };
 
+        // Desktop Triggers
         loginBtn.addEventListener('click', () => showModal(loginModal));
         signupBtn.addEventListener('click', () => showModal(signupModal));
+        
+        // Mobile Triggers
+        loginBtnMobile.addEventListener('click', () => showModal(loginModal));
+        signupBtnMobile.addEventListener('click', () => showModal(signupModal));
+
         getStartedBtn.addEventListener('click', () => showModal(signupModal));
         closeLoginModal.addEventListener('click', () => hideModal(loginModal));
         closeSignupModal.addEventListener('click', () => hideModal(signupModal));
@@ -178,7 +304,7 @@
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     console.log('Signed up:', userCredential.user);
-                    window.location.href = './main.html'; // Redirect to your main app page
+                    window.location.href = './main.html'; 
                 })
                 .catch((error) => {
                     signupError.textContent = error.message;
@@ -194,7 +320,7 @@
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     console.log('Logged in:', userCredential.user);
-                    window.location.href = './main.html'; // Redirect to your main app page
+                    window.location.href = './main.html'; 
                 })
                 .catch((error) => {
                     loginError.textContent = error.message;
@@ -206,7 +332,7 @@
             signInWithPopup(auth, provider)
                 .then((result) => {
                     console.log('Google auth success:', result.user);
-                    window.location.href = './main.html'; // Redirect to your main app page
+                    window.location.href = './main.html'; 
                 }).catch((error) => {
                     loginError.textContent = error.message;
                     signupError.textContent = error.message;
@@ -218,8 +344,6 @@
         // --- Auth State Observer ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // If user is already logged in, you might want to redirect them
-                // For this landing page, we'll just log it.
                 console.log('User is logged in:', user.uid);
             } else {
                 console.log('User is logged out.');
