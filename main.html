@@ -355,8 +355,8 @@
 
     <script>
         // --- Common Variables ---
-        // IMPORTANT: Replace with your actual Gemini API Key if deploying
-        const apiKey = "AIzaSyDmXbjeNcI-TjdsnxMPrre5laYsa3X-kVA"; 
+        // SECURE UPDATE: Hardcoded API key removed. 
+        // We will call the backend route /api/gemini instead.
 
         // --- Navigation Elements ---
         const navHome = document.getElementById('nav-home');
@@ -1080,9 +1080,10 @@
         }
 
 
-        // --- Generic Gemini API Caller ---
+        // --- SECURE API CALLER ---
+        // This calls your internal Vercel function, NOT Google directly.
         async function callGeminiAPI(prompt, additionalParts, history = []) {
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+            const apiUrl = '/api/gemini'; // Points to your secure backend file
             
             let contents;
             if (history.length > 0) {
@@ -1111,7 +1112,7 @@
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(`API request failed: ${errorData.error.message}`);
+                throw new Error(`API request failed: ${errorData.error || response.statusText}`);
             }
 
             const result = await response.json();
